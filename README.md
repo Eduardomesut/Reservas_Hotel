@@ -1,7 +1,6 @@
 # Reservas_Hotel
 Sistema de Reservas de un Hotel
-4. Sistema de Reservas de un Hotel
-Un sistema de reservas para un hotel está también entre los proyectos más populares de Java. Crear un sistema de reservas es bastante sencillo y debe cumplir los siguientes requisitos:
+Crear un sistema de reservas es bastante sencillo y debe cumplir los siguientes requisitos:
 
 Pedir los requisitos del usuario actual (preferencia de habitaciones, y fechas de reserva)
 
