@@ -9,4 +9,5 @@ public interface clientesDAO {
     public ArrayList<clientes> getClientes() throws Exception;
     public clientes getClienteByReserva(int reserva_id) throws Exception;
     public int updateCliente(clientes h) throws Exception;
+    public int addCliente(clientes h)throws Exception;
 }

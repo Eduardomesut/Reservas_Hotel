@@ -17,6 +17,11 @@ public class clientes {
         return  id + " :: " + nombre + " :: " + fechaNac + " :: " + fechaEntrada + " :: " + fechaSalida ;
     }
 
+    public clientes(String nombre, String fechaNac) {
+        this.nombre = nombre;
+        this.fechaNac = fechaNac;
+    }
+
     public clientes(int id, String nombre, String fechaNac, String fechaEntrada, String fechaSalida) {
         this.id = id;
         this.nombre = nombre;
@@ -30,6 +35,9 @@ public class clientes {
     }
 
 
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getNombre() {
         return nombre;

@@ -53,12 +53,50 @@ Scanner sc = new Scanner(System.in);
 
     @Override
     public clientes getClienteByReserva(int reserva_id) throws Exception {
-        return null;
+        clientes c = null;
+        ResultSet rs = null;
+        String sql = "SELECT c.id, c.nombre, c.fechaNac, c.fecha_ingreso, c.fecha_salida FROM clientes AS c JOIN reservas as r ON c.id = r.cliente_id WHERE r.reserva_id = ?;";
+        try (PreparedStatement pts = con.prepareStatement(sql)){
+            pts.setInt(1,reserva_id);
+            rs = pts.executeQuery();
+            while (rs.next()){
+                c = new clientes(rs.getInt("id"), rs.getString("nombre"), rs.getString("fechaNac"),
+                        rs.getString("fecha_ingreso"), rs.getString("fecha_salida"));
+            }
+        }catch (Exception e){
+            throw e;
+        }finally {
+            if (rs != null){
+                rs.close();
+            }
+        }
+        return c;
     }
 
     @Override
     public int updateCliente(clientes h) throws Exception {
+
+        //Later
         return 0;
+    }
+
+    @Override
+    public int addCliente(clientes h) throws Exception {
+        int r = 0;
+
+        String sql = "INSERT INTO clientes (nombre, fechaNac, fecha_ingreso, fecha_salida) VALUES (?, ?, ?, ?);";
+        try (PreparedStatement rs = con.prepareStatement(sql);){
+        rs.setString(1, h.getNombre());
+        rs.setString(2, h.getFechaNac());
+        rs.setString(3, h.getFechaEntrada());
+        rs.setString(4, h.getFechaSalida());
+        r = rs.executeUpdate();
+
+        }catch (Exception e){
+            throw e;
+        }
+
+        return r;
     }
 
     @Override
