@@ -1,5 +1,7 @@
 package biz;
 
+import java.util.Date;
+
 public class clientes {
 
     private int id;
