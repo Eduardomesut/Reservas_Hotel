@@ -20,6 +20,8 @@ public class exec {
 
         //Inicio de sesion de usuario y añadir nuevo cliente
         iniciarSesion (ph, sc);
+
+
         // Cuando añada una reserva updatear tambien el clientes para añadir fecha de entrada y salida
 
         //Hacer un método para que al iniciar sesión el usuario consiga ver su id asignado para su cuenta,para posteriores consultas
