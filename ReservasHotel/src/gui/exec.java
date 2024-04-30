@@ -1,6 +1,7 @@
 package gui;
 
 import biz.ProgramaHotel;
+import biz.Reserva;
 import biz.clientes;
 
 import java.util.ArrayList;
@@ -28,6 +29,11 @@ public class exec {
 
         //Prueba desechable de clientes para el funcionamiento de la DB
         try {
+            //Hacer metodo para que se añadan las reservas desde la aplicación
+            Reserva r = new Reserva(18, 3, 2, "2024-06-12", "2024-06-15");
+            ph.addReserva(r);
+            clientes nuevo = ph.getClienteByReserva(3);
+            System.out.println(nuevo);
             ArrayList<clientes>al = ph.getClientes();
             System.out.println("CLIENTES");
             System.out.println("------------------");
@@ -35,8 +41,6 @@ public class exec {
                 System.out.println(cliente);
             }
 
-            clientes nuevo = ph.getClienteByReserva(3);
-            System.out.println(nuevo);
 
         }catch (Exception e){
             e.printStackTrace();

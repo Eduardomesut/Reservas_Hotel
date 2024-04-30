@@ -46,12 +46,10 @@ public class ProgramaHotel {
 
     // Aqui tenemos que hacer todo el addReserva para que luego utilize los datos de reserva para updatear al cliente
     public Reserva addReserva (Reserva r)throws  Exception {
-        r = new Reserva(5, 6, 6, "2024-04-31", "2024-05-04");
+
         try (ReservaDAOImpl re = new ReservaDAOImpl(); clientesDAOImpl cl = new clientesDAOImpl();){
-            //re.addReserva
-            cl.updateCliente(r.getReserva_id());
-
-
+            re.addReserva(r);
+            cl.updateCliente(r.getFecha_ingreso(), r.getFecha_salida(), r.getReserva_id());
         }catch (Exception e){
             throw e;
         }

@@ -6,6 +6,7 @@ import utils.Configuration;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 
 public class ReservaDAOImpl implements ReservaDAO, AutoCloseable {
@@ -39,6 +40,24 @@ public class ReservaDAOImpl implements ReservaDAO, AutoCloseable {
     @Override
     public int updateReserva(Reserva h) throws Exception {
         return 0;
+    }
+
+    @Override
+    public int addReserva(Reserva h) throws Exception {
+        int r = 0;
+        String sql = "INSERT INTO reservas VALUES (?, ?, ?, ?, ?);";
+        try (PreparedStatement pst = con.prepareStatement(sql);){
+            pst.setInt(1, h.getReserva_id());
+            pst.setInt(2, h.getCliente_id());
+            pst.setInt(3, h.getHabitacion_id());
+            pst.setString(4, h.getFecha_ingreso());
+            pst.setString(5, h.getFecha_salida());
+            r = pst.executeUpdate();
+
+        }catch (Exception e){
+            throw e;
+        }
+        return r;
     }
 
     @Override

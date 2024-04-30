@@ -74,14 +74,16 @@ Scanner sc = new Scanner(System.in);
     }
 
     @Override
-    public int updateCliente(int reserva_id) throws Exception {
+    public int updateCliente(String fecha_entrada, String fecha_salida, int reserva_id) throws Exception {
         int r = 0;
         int s = 0;
-        String sql = "UPDATE clientes SET fecha_ingreso = (Select fecha_ingreso FROM reservas WHERE reserva_id = ?);";
-        String sql2 = "UPDATE clientes SET fecha_salida = (Select fecha_salida FROM reservas WHERE reserva_id = ?);";
+        String sql = "UPDATE clientes SET fecha_ingreso = ? WHERE id = (SELECT cliente_id FROM reservas WHERE reserva_id = ?);";
+        String sql2 = "UPDATE clientes SET fecha_salida = ? WHERE id = (SELECT cliente_id FROM reservas WHERE reserva_id = ?);";
         try (PreparedStatement psto = con.prepareStatement(sql); PreparedStatement pstt = con.prepareStatement(sql2);){
-            psto.setInt(1,reserva_id);
-            pstt.setInt(1, reserva_id);
+            psto.setString(1,fecha_entrada);
+            psto.setInt(2, reserva_id);
+            pstt.setString(1, fecha_salida);
+            pstt.setInt(2,reserva_id);
             r = psto.executeUpdate();
             s = pstt.executeUpdate();
         }catch (Exception e){

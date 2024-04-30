@@ -9,6 +9,7 @@ public interface ReservaDAO {
     public ArrayList<Reserva> getReservas() throws Exception;
     public Reserva getReservabyCliente(int cliente_id) throws Exception;
     public int updateReserva(Reserva h) throws Exception;
+    public int addReserva(Reserva h)throws Exception;
 
 
 
