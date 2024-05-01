@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class ProgramaHotel {
 
 
-
+    //Hay que hacer de nuevo ProgramaHotel para definir los requisitos y las funciones mas relevantes a realizar y hacerlas conjuntamente
 
     //Inicio de sesión
     public int addCliente (clientes h) throws Exception{
@@ -56,4 +56,5 @@ public class ProgramaHotel {
 
         return r;
     }
+
 }

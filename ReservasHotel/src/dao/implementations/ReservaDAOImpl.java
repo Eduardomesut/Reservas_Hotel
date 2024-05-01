@@ -38,8 +38,20 @@ public class ReservaDAOImpl implements ReservaDAO, AutoCloseable {
     }
 
     @Override
-    public int updateReserva(Reserva h) throws Exception {
-        return 0;
+    public int updateReserva(Reserva h, int nuevaHab, String nuevaFentrada, String nuevaFsalida) throws Exception {
+        int r = 0;
+        String sql = "UPDATE reservas SET habitacion_id = ?, fecha_ingreso = ?, fecha_salida = ? WHERE reserva_id = ?;";
+        try (PreparedStatement pst = con.prepareStatement(sql);){
+            pst.setInt(1,nuevaHab);
+            pst.setString(2,nuevaFentrada);
+            pst.setString(3,nuevaFsalida);
+            pst.setInt(4,h.getReserva_id());
+            r = pst.executeUpdate();
+
+        }catch (Exception e){
+            throw e;
+        }
+        return r;
     }
 
     @Override
