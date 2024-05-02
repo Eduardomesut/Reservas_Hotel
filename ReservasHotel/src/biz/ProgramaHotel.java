@@ -53,8 +53,17 @@ public class ProgramaHotel {
         }catch (Exception e){
             throw e;
         }
-
         return r;
+    }
+
+    public ArrayList<Reserva> getReservas() throws Exception {
+        ArrayList<Reserva> al = new ArrayList<>();
+        try (ReservaDAOImpl re = new ReservaDAOImpl();){
+            al = re.getReservas();
+        }catch (Exception e){
+            throw e;
+        }
+        return al;
     }
 
 }

@@ -7,6 +7,7 @@ import utils.Configuration;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 
 public class ReservaDAOImpl implements ReservaDAO, AutoCloseable {
@@ -25,16 +26,47 @@ public class ReservaDAOImpl implements ReservaDAO, AutoCloseable {
 
         con = DriverManager.getConnection(Configuration.URL);
     }
-
-
     @Override
     public ArrayList<Reserva> getReservas() throws Exception {
-        return null;
+        ArrayList<Reserva> al = new ArrayList<>();
+        Reserva r = null;
+        ResultSet rs = null;
+        String sql = "SELECT reserva_id, cliente_id, habitacion_id, fecha_ingreso, fecha_salida FROM reservas;";
+        try (PreparedStatement pst = con.prepareStatement(sql);){
+            rs = pst.executeQuery();
+            while (rs.next()){
+                r = new Reserva(rs.getInt("reserva_id"), rs.getInt("cliente_id"), rs.getInt("habitacion_id"), rs.getString("fecha_ingreso"), rs.getString("fecha_salida"));
+                al.add(r);
+            }
+        }catch (Exception e){
+            throw e;
+        }finally {
+            if (rs != null){
+                rs.close();
+            }
+        }
+        return al;
     }
 
     @Override
     public Reserva getReservabyCliente(int cliente_id) throws Exception {
-        return null;
+        Reserva r = null;
+        ResultSet rs = null;
+        String sql = "SELECT reserva_id, cliente_id, habitacion_id, fecha_ingreso, fecha_salida FROM reservas WHERE cliente_id = ?;";
+        try (PreparedStatement pst = con.prepareStatement(sql);){
+            pst.setInt(1,cliente_id);
+            rs = pst.executeQuery();
+            while (rs.next()){
+                r = new Reserva(rs.getInt("reserva_id"), rs.getInt("cliente_id"), rs.getInt("habitacion_id"), rs.getString("fecha_ingreso"), rs.getString("fecha_salida"));
+            }
+        }catch (Exception e){
+            throw e;
+        }finally {
+            if (rs != null){
+                rs.close();
+            }
+        }
+        return r;
     }
 
     @Override
@@ -74,6 +106,6 @@ public class ReservaDAOImpl implements ReservaDAO, AutoCloseable {
 
     @Override
     public void close() throws Exception {
-
+        con.close();
     }
 }

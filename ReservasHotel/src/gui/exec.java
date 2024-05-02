@@ -9,6 +9,7 @@ import java.util.Scanner;
 
 public class exec {
 
+    //Hay que hacer de nuevo ProgramaHotel para definir los requisitos y las funciones mas relevantes a realizar y hacerlas conjuntamente
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         ProgramaHotel ph = null;
@@ -18,9 +19,20 @@ public class exec {
         }catch (Exception e){
             e.printStackTrace();
         }
+        try {
+            ArrayList<Reserva> reservas = ph.getReservas();
+            System.out.println("-----RESERVAS-----");
+            for (Reserva reser:reservas) {
+                System.out.println(reser);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
 
         //Inicio de sesion de usuario y añadir nuevo cliente
-        iniciarSesion (ph, sc);
+        //iniciarSesion (ph, sc);
 
 
         // Cuando añada una reserva updatear tambien el clientes para añadir fecha de entrada y salida
@@ -30,7 +42,7 @@ public class exec {
         //Prueba desechable de clientes para el funcionamiento de la DB
         try {
             //Hacer metodo para que se añadan las reservas desde la aplicación
-            Reserva r = new Reserva(18, 3, 2, "2024-06-12", "2024-06-15");
+            Reserva r = new Reserva(19, 3, 2, "2024-06-12", "2024-06-15");
             ph.addReserva(r);
             clientes nuevo = ph.getClienteByReserva(3);
             System.out.println(nuevo);
