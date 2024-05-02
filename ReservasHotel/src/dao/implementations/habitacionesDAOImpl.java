@@ -1,11 +1,14 @@
 package dao.implementations;
 
+import biz.Reserva;
 import biz.habitaciones;
 import dao.interfaces.habitacionesDAO;
 import utils.Configuration;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 
 public class habitacionesDAOImpl implements habitacionesDAO, AutoCloseable{
@@ -23,11 +26,27 @@ public class habitacionesDAOImpl implements habitacionesDAO, AutoCloseable{
     public habitacionesDAOImpl() throws Exception {
         con = DriverManager.getConnection(Configuration.URL);
     }
-
-
     @Override
     public ArrayList<habitaciones> getHabitacionesFromHotel(int hotel_id) throws Exception {
-        return null;
+        ArrayList<habitaciones>al = new ArrayList<>();
+        habitaciones hab = null;
+        ResultSet rs = null;
+        String sql = "SELECT habitacion_id, hotel_id, numero, tipo FROM habitaciones WHERE hotel_id = ?;";
+        try (PreparedStatement pst = con.prepareStatement(sql);){
+            pst.setInt(1, hotel_id);
+            rs = pst.executeQuery();
+            while (rs.next()){
+                hab = new habitaciones(rs.getInt("habitacion_id"), rs.getInt("hotel_id"), rs.getString("numero"), rs.getString("tipo"));
+                al.add(hab);
+            }
+        }catch (Exception e){
+            throw e;
+        }finally {
+            if (rs != null){
+                rs.close();
+            }
+        }
+        return al;
     }
 
     @Override
