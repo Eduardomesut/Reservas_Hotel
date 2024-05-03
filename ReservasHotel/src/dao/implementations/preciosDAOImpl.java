@@ -7,6 +7,8 @@ import utils.Configuration;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class preciosDAOImpl implements preciosDAO, AutoCloseable {
 
@@ -26,12 +28,44 @@ public class preciosDAOImpl implements preciosDAO, AutoCloseable {
 
     @Override
     public precios getPrecio(int id_habitacion, String fecha_entrada) throws Exception {
-        return null;
+        precios nuevo = null;
+        ResultSet rs = null;
+        String sql = "SELECT id, temporada_alta, temporada_media, temporada_baja, id_habitacion FROM precios WHERE id_habitacion =?;";
+        try (PreparedStatement pst = con.prepareStatement(sql);){
+            pst.setInt(1,id_habitacion);
+            rs = pst.executeQuery();
+            while (rs.next()){
+                nuevo = new precios(rs.getInt("id"), rs.getDouble("temporada_alta"), rs.getDouble("temporada_media"), rs.getDouble("temporada_baja"), rs.getInt("id_habitacion"));
+            }
+        }catch (Exception e){
+            throw e;
+        }finally {
+            if (rs != null){
+                rs.close();
+            }
+        }
+        return nuevo;
     }
 
     @Override
-    public precios getPrecioByReserva(Reserva nueva) throws Exception {
-        return null;
+    public precios getPrecioByReserva(int id_reserva) throws Exception {
+        precios nuevo = null;
+        ResultSet rs = null;
+        String sql = "SELECT p.id, p.temporada_alta, p.temporada_media, p.temporada_baja, p.id_habitacion FROM precios AS p JOIN reservas AS r ON p.id_habitacion = r.habitacion_id WHERE r.reserva_id = ?;";
+        try (PreparedStatement pst = con.prepareStatement(sql)){
+            pst.setInt(1,id_reserva);
+            rs = pst.executeQuery();
+            while (rs.next()){
+                nuevo = new precios(rs.getInt("p.id"), rs.getDouble("p.temporada_alta"), rs.getDouble("p.temporada_media"), rs.getDouble("p.temporada_baja"), rs.getInt("p.id_habitacion"));
+            }
+        }catch (Exception e){
+            throw e;
+        }finally {
+            if (rs != null){
+                rs.close();
+            }
+        }
+        return nuevo;
     }
 
     @Override
