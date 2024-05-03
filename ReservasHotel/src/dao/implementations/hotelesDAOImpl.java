@@ -50,7 +50,7 @@ public class hotelesDAOImpl implements hotelesDAO, AutoCloseable {
     public hoteles getHotelByReserva(int reserva_id) throws Exception {
         hoteles nuevo = null;
         ResultSet rs = null;
-        String sql = "SELECT h.hotel_id, h.nombre, h.ubicacion FROM hoteles as h JOIN habitaciones AS ha JOIN h.hotel_id = ha.hotel_id JOIN reserva AS r ON ha.habitacion_id = r.habitacion_id WHERE r.reserva_id = ?;";
+        String sql = "SELECT h.hotel_id, h.nombre, h.ubicacion FROM hoteles as h JOIN habitaciones AS ha ON h.hotel_id = ha.hotel_id JOIN reserva AS r ON ha.habitacion_id = r.habitacion_id WHERE r.reserva_id = ?;";
         try (PreparedStatement pst = con.prepareStatement(sql)){
             pst.setInt(1,reserva_id);
             rs = pst.executeQuery();
