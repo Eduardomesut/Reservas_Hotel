@@ -94,22 +94,61 @@ Scanner sc = new Scanner(System.in);
     }
 
     @Override
-    public int addCliente(clientes h) throws Exception {
+    public int addCliente(String nombre, String fechaNac) throws Exception {
         int r = 0;
 
-        String sql = "INSERT INTO clientes (nombre, fechaNac, fecha_ingreso, fecha_salida) VALUES (?, ?, ?, ?);";
+        String sql = "INSERT INTO clientes (nombre, fechaNac) VALUES (?, ?);";
         try (PreparedStatement rs = con.prepareStatement(sql);){
-        rs.setString(1, h.getNombre());
-        rs.setString(2, h.getFechaNac());
-        rs.setString(3, h.getFechaEntrada());
-        rs.setString(4, h.getFechaSalida());
+        rs.setString(1, nombre);
+        rs.setString(2, fechaNac);
         r = rs.executeUpdate();
-
         }catch (Exception e){
             throw e;
         }
-
         return r;
+    }
+
+    @Override
+    public int getClienteId(String nombre, String fechaNac) throws Exception {
+        int cliente_id = -1;
+        ResultSet rs = null;
+        String sql = "SELECT id FROM clientes WHERE nombre = ? AND fechaNac = ?;";
+        try (PreparedStatement pst = con.prepareStatement(sql);){
+            pst.setString(1,nombre);
+            pst.setString(2,fechaNac);
+            rs = pst.executeQuery();
+            while (rs.next()){
+                cliente_id = rs.getInt("id");
+            }
+        }catch (Exception e){
+            throw e;
+        }finally {
+            if (rs != null){
+                rs.close();
+            }
+        }
+        return cliente_id;
+    }
+
+    @Override
+    public String getNombreCliente(int id_cliente) throws Exception {
+        String nombre = "";
+        ResultSet rs = null;
+        String sql = "SELECT nombre FROM clientes WHERE id = ?;";
+        try (PreparedStatement pst = con.prepareStatement(sql);){
+            pst.setInt(1,id_cliente);
+            rs = pst.executeQuery();
+            while (rs.next()){
+                nombre = rs.getString("nombre");
+            }
+        }catch (Exception e){
+            throw e;
+        }finally {
+            if (rs != null){
+                rs.close();
+            }
+        }
+        return nombre;
     }
 
     @Override

@@ -87,21 +87,43 @@ public class ReservaDAOImpl implements ReservaDAO, AutoCloseable {
     }
 
     @Override
-    public int addReserva(Reserva h) throws Exception {
+    public int addReserva(int cliente_id, int habitacion_id, String fecha_ingreso, String fecha_salida) throws Exception {
         int r = 0;
-        String sql = "INSERT INTO reservas VALUES (?, ?, ?, ?, ?);";
+        String sql = "INSERT INTO reservas (cliente_id, habitacion_id, fecha_ingreso, fecha_salida) VALUES (?, ?, ?, ?);";
         try (PreparedStatement pst = con.prepareStatement(sql);){
-            pst.setInt(1, h.getReserva_id());
-            pst.setInt(2, h.getCliente_id());
-            pst.setInt(3, h.getHabitacion_id());
-            pst.setString(4, h.getFecha_ingreso());
-            pst.setString(5, h.getFecha_salida());
+            pst.setInt(1, cliente_id);
+            pst.setInt(2, habitacion_id);
+            pst.setString(3, fecha_ingreso);
+            pst.setString(4, fecha_salida);
             r = pst.executeUpdate();
 
         }catch (Exception e){
             throw e;
         }
         return r;
+    }
+
+    @Override
+    public int getReservaId(int cliente_id, String fecha_ingreso) throws Exception {
+        int reserva_id = -1;
+        ResultSet rs = null;
+        String sql = "SELECT reserva_id FROM reservas WHERE cliente_id = ? AND fecha_ingreso = ?;";
+        try (PreparedStatement pst = con.prepareStatement(sql);){
+            pst.setInt(1,cliente_id);
+            pst.setString(2,fecha_ingreso);
+            rs = pst.executeQuery();
+            while (rs.next()){
+             reserva_id = rs.getInt("reserva_id");
+            }
+
+        }catch (Exception e){
+            throw e;
+        }finally {
+            if (rs != null){
+                rs.close();
+            }
+        }
+        return reserva_id;
     }
 
     @Override

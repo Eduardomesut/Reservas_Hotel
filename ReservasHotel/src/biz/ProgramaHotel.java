@@ -6,22 +6,30 @@ import dao.implementations.clientesDAOImpl;
 import java.util.ArrayList;
 
 public class ProgramaHotel {
-
-
     //Hay que hacer de nuevo ProgramaHotel para definir los requisitos y las funciones mas relevantes a realizar y hacerlas conjuntamente
 
-    //Inicio de sesión
-    public int addCliente (clientes h) throws Exception{
-
+    public int addReserva (Reserva h)throws  Exception {
         int r = 0;
-        try (clientesDAOImpl c = new clientesDAOImpl();){
-            r = c.addCliente(h);
+        try (ReservaDAOImpl re = new ReservaDAOImpl(); clientesDAOImpl cl = new clientesDAOImpl();){
+            re.addReserva(h.getCliente_id(), h.getHabitacion_id(),h.getFecha_ingreso(),h.getFecha_salida());
+            cl.updateCliente(h.getFecha_ingreso(),h.getFecha_salida(),re.getReservaId(h.getCliente_id(),h.getFecha_ingreso()));
         }catch (Exception e){
             throw e;
         }
-
         return r;
     }
+    public int addCliente (clientes h) throws Exception{
+        int r = 0;
+        try (clientesDAOImpl c = new clientesDAOImpl();){
+            r = c.addCliente(h.getNombre(),h.getFechaNac());
+        }catch (Exception e){
+            throw e;
+        }
+        return r;
+    }
+
+    //Usos de prueba
+    //Inicio de sesión
 
     //Pruebas desechable para sacar los clientes
     public ArrayList<clientes> getClientes() throws Exception {
@@ -44,17 +52,18 @@ public class ProgramaHotel {
         return nuevo;
     }
 
-    // Aqui tenemos que hacer todo el addReserva para que luego utilize los datos de reserva para updatear al cliente
-    public Reserva addReserva (Reserva r)throws  Exception {
-
-        try (ReservaDAOImpl re = new ReservaDAOImpl(); clientesDAOImpl cl = new clientesDAOImpl();){
-            re.addReserva(r);
-            cl.updateCliente(r.getFecha_ingreso(), r.getFecha_salida(), r.getReserva_id());
+    public int darIDNHUsuario (String nombre, String fechaNac)throws Exception{
+        int idNH = -1;
+        try (clientesDAOImpl c = new clientesDAOImpl();){
+            idNH = c.getClienteId(nombre,fechaNac);
         }catch (Exception e){
             throw e;
         }
-        return r;
+        return idNH;
     }
+
+    // Aqui tenemos que hacer todo el addReserva para que luego utilize los datos de reserva para updatear al cliente
+
 
     public ArrayList<Reserva> getReservas() throws Exception {
         ArrayList<Reserva> al = new ArrayList<>();
@@ -64,6 +73,16 @@ public class ProgramaHotel {
             throw e;
         }
         return al;
+    }
+    public String nombre (int id_usuario) throws Exception{
+        String nombre = "";
+        try (clientesDAOImpl c = new clientesDAOImpl();){
+            nombre = c.getNombreCliente(id_usuario);
+        }catch (Exception e){
+            throw e;
+        }
+
+        return nombre;
     }
 
 }

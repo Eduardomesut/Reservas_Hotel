@@ -21,6 +21,13 @@ public class Reserva {
         this.fecha_salida = fecha_salida;
     }
 
+    public Reserva(int cliente_id, int habitacion_id, String fecha_ingreso, String fecha_salida) {
+        this.cliente_id = cliente_id;
+        this.habitacion_id = habitacion_id;
+        this.fecha_ingreso = fecha_ingreso;
+        this.fecha_salida = fecha_salida;
+    }
+
     public int getReserva_id() {
         return reserva_id;
     }
