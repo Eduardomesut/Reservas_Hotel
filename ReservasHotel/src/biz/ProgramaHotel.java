@@ -84,5 +84,12 @@ public class ProgramaHotel {
 
         return nombre;
     }
+    public Reserva reservaDeUsuario (int id_usuario)throws Exception{
+        Reserva nueva = null;
+        try (ReservaDAOImpl r = new ReservaDAOImpl();){
+            nueva = r.getReservabyCliente(id_usuario);
+        }
+        return nueva;
+    }
 
 }

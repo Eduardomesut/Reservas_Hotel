@@ -10,7 +10,6 @@ import java.util.Scanner;
 
 public class exec {
 
-    //Hay que hacer de nuevo ProgramaHotel para definir los requisitos y las funciones mas relevantes a realizar y hacerlas conjuntamente
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         ProgramaHotel ph = null;
@@ -20,6 +19,7 @@ public class exec {
             do {
                 System.out.println("Quiere iniciar sesión o registrarse?");
                 System.out.println("Pulse 1 para registrarse o 2 para iniciar sesion");
+                System.out.println("Pulsa S para salir");
                 opcion = sc.nextLine();
                 if (!opcion.equalsIgnoreCase("s")){
                     int id = -1;
@@ -41,11 +41,6 @@ public class exec {
         }catch (Exception e){
             e.printStackTrace();
         }
-
-        //Inicio de sesion de usuario y añadir nuevo cliente
-        //iniciarSesion (ph, sc);
-
-
     }
     public static int registrarse(ProgramaHotel ph, Scanner sc){
         int id = -1;
@@ -74,8 +69,8 @@ public class exec {
         }
         return id;
     }
-    public static void addReserva (ProgramaHotel ph, Scanner sc) throws Exception {
-        int id = 17;
+    public static void addReserva (int id,int hab_id, ProgramaHotel ph, Scanner sc) throws Exception {
+
         int habitacion_id = 2;
         String fechaIngreso;
         String fechaSalida;
@@ -94,8 +89,36 @@ public class exec {
     }
     public static void menu (int IDNH, ProgramaHotel ph, Scanner sc)throws Exception{
         String nombre = "";
+        String opcion;
+        int id_hab = -1;
         nombre = ph.nombre(IDNH);
-
+        do {
         System.out.println("Bienvenido al menú " + nombre);
+        System.out.println("------------------------------");
+        System.out.println("Pulse 1 para buscar habitaciones");
+        System.out.println("Pulse 2 para añadir una reserva");
+        System.out.println("Pulse 3 para ver tus reservas");
+        System.out.println("Pulsa S para salir");
+        opcion = sc.nextLine();
+        if (!opcion.equalsIgnoreCase("s")){
+            if (opcion.equalsIgnoreCase("1")){
+                id_hab = elegirHabitacion(ph, sc);
+            } else if (opcion.equalsIgnoreCase("2")) {
+                addReserva(IDNH,id_hab, ph, sc);
+            } else if (opcion.equalsIgnoreCase("3")) {
+                Reserva nueva = ph.reservaDeUsuario(IDNH);
+                System.out.println(nueva);
+            }
+        }
+        }while (!opcion.equalsIgnoreCase("s"));
     }
+    public static int elegirHabitacion (ProgramaHotel ph, Scanner sc){
+        int id_hab = -1;
+
+
+
+        return id_hab;
+    }
+
+
 }
