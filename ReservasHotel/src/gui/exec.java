@@ -23,10 +23,11 @@ public class exec {
                     int id = -1;
                     if (opcion.equalsIgnoreCase("1")){
                         id = registrarse(ph, sc);
+
                     } else if (opcion.equalsIgnoreCase("2")) {
                         id = iniciarSesion(ph, sc);
                     }
-                    if (id != -1){
+                    if (ph.getIDCorrecto(id)){
                         System.out.println("Desea acceder al menú de usuario? ");
                         menu(id, ph, sc);
                     }else{
@@ -76,6 +77,7 @@ public class exec {
         fechaSalida = sc.nextLine();
         Reserva nueva = new Reserva(id,hab_id,fechaIngreso,fechaSalida);
         ph.addReserva(nueva);
+        System.out.println("Reserva realizada!! Muchas gracias!");
     }
     public static int iniciarSesion(ProgramaHotel ph, Scanner sc){
         int id = -1;
@@ -102,8 +104,7 @@ public class exec {
             } else if (opcion.equalsIgnoreCase("2")) {
                 addReserva(IDNH,id_hab, ph, sc);
             } else if (opcion.equalsIgnoreCase("3")) {
-                Reserva nueva = ph.reservaDeUsuario(IDNH);
-                System.out.println(nueva);
+                verReservas(IDNH, ph, sc);
             }
         }
         }while (!opcion.equalsIgnoreCase("s"));
@@ -131,6 +132,12 @@ public class exec {
         System.out.println("Enhorabuena!!!!");
         return id_hab;
     }
-
-
+    //Poner en estas reservas el nombre del hotel a parte de la fecha y el tipo de habitacion
+    public static void verReservas (int id, ProgramaHotel ph, Scanner sc) throws Exception {
+        System.out.println("-------Reservas realizadas--------");
+        ArrayList<Reserva>re = ph.getReservas(id);
+        for (Reserva reser:re) {
+            System.out.println(reser);
+        }
+    }
 }

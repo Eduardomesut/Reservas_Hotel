@@ -67,10 +67,10 @@ public class ProgramaHotel {
     // Aqui tenemos que hacer todo el addReserva para que luego utilize los datos de reserva para updatear al cliente
 
 
-    public ArrayList<Reserva> getReservas() throws Exception {
+    public ArrayList<Reserva> getReservas(int cliente_id) throws Exception {
         ArrayList<Reserva> al = new ArrayList<>();
         try (ReservaDAOImpl re = new ReservaDAOImpl();){
-            al = re.getReservas();
+            al = re.getReservas(cliente_id);
         }catch (Exception e){
             throw e;
         }
@@ -110,6 +110,16 @@ public class ProgramaHotel {
             throw e;
         }
         return al;
+    }
+    public boolean getIDCorrecto(int id_cliente) throws Exception{
+        try (clientesDAOImpl cl = new clientesDAOImpl();){
+            if (cl.getNombreCliente(id_cliente) != null){
+                return true;
+            }
+        }catch (Exception e){
+            throw e;
+        }
+        return false;
     }
 
 }

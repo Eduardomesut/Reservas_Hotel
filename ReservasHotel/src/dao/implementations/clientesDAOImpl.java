@@ -132,7 +132,7 @@ Scanner sc = new Scanner(System.in);
 
     @Override
     public String getNombreCliente(int id_cliente) throws Exception {
-        String nombre = "";
+        String nombre = null;
         ResultSet rs = null;
         String sql = "SELECT nombre FROM clientes WHERE id = ?;";
         try (PreparedStatement pst = con.prepareStatement(sql);){

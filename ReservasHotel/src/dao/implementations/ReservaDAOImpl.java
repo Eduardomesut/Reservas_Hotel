@@ -27,12 +27,13 @@ public class ReservaDAOImpl implements ReservaDAO, AutoCloseable {
         con = DriverManager.getConnection(Configuration.URL);
     }
     @Override
-    public ArrayList<Reserva> getReservas() throws Exception {
+    public ArrayList<Reserva> getReservas(int cliente_id) throws Exception {
         ArrayList<Reserva> al = new ArrayList<>();
         Reserva r = null;
         ResultSet rs = null;
-        String sql = "SELECT reserva_id, cliente_id, habitacion_id, fecha_ingreso, fecha_salida FROM reservas;";
+        String sql = "SELECT reserva_id, cliente_id, habitacion_id, fecha_ingreso, fecha_salida FROM reservas WHERE cliente_id = ?;";
         try (PreparedStatement pst = con.prepareStatement(sql);){
+            pst.setInt(1,cliente_id);
             rs = pst.executeQuery();
             while (rs.next()){
                 r = new Reserva(rs.getInt("reserva_id"), rs.getInt("cliente_id"), rs.getInt("habitacion_id"), rs.getString("fecha_ingreso"), rs.getString("fecha_salida"));
@@ -50,6 +51,7 @@ public class ReservaDAOImpl implements ReservaDAO, AutoCloseable {
 
     @Override
     public Reserva getReservabyCliente(int cliente_id) throws Exception {
+
         Reserva r = null;
         ResultSet rs = null;
         String sql = "SELECT reserva_id, cliente_id, habitacion_id, fecha_ingreso, fecha_salida FROM reservas WHERE cliente_id = ?;";
