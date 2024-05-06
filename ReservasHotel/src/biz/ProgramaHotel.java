@@ -2,6 +2,8 @@ package biz;
 
 import dao.implementations.ReservaDAOImpl;
 import dao.implementations.clientesDAOImpl;
+import dao.implementations.hotelesDAOImpl;
+import dao.implementations.habitacionesDAOImpl;
 
 import java.util.ArrayList;
 
@@ -90,6 +92,24 @@ public class ProgramaHotel {
             nueva = r.getReservabyCliente(id_usuario);
         }
         return nueva;
+    }
+    public ArrayList<hoteles> getHoteles () throws Exception{
+        ArrayList<hoteles>al = new ArrayList<>();
+        try (hotelesDAOImpl h = new hotelesDAOImpl();){
+            al = h.getHoteles();
+        }catch (Exception e){
+            throw e;
+        }
+        return al;
+    }
+    public ArrayList<habitaciones> getHabitaciones(int id_hotel)throws Exception{
+        ArrayList<habitaciones> al = new ArrayList<>();
+        try (habitacionesDAOImpl ha = new habitacionesDAOImpl();){
+            al = ha.getHabitacionesFromHotel(id_hotel);
+        }catch (Exception e){
+            throw e;
+        }
+        return al;
     }
 
 }
