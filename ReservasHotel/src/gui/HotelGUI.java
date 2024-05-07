@@ -52,7 +52,14 @@ public class HotelGUI extends JFrame {
         cardLayout.show(cardPanel, userMenuKey);
     }
 
-
+    public void switchToRooms(int hotel_id) throws Exception {
+        String userMenuKey = "Rooms";
+        // Remueve el panel si ya existe
+        cardPanel.remove(cardPanel.getComponentCount() - 1);
+        searchRoomPanel searchRoomPanel = new searchRoomPanel(this, ph, hotel_id);
+        cardPanel.add(searchRoomPanel, userMenuKey);
+        cardLayout.show(cardPanel, userMenuKey);
+    }
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {

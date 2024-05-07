@@ -57,9 +57,19 @@ public class UserMenuPanel extends JPanel {
         ArrayList<hoteles> hotels = ph.getHoteles();
         String message = "Hoteles disponibles:\n";
         for (hoteles hotel : hotels) {
+
             message += "ID: " + hotel.getHotel_id() + " - " + hotel.getNombre() + " - " + hotel.getUbicacion() + "\n";
         }
         JOptionPane.showMessageDialog(this, message);
+        String input = JOptionPane.showInputDialog(this, "Elige IDHotel");
+        try {
+            int hotelId = Integer.parseInt(input);
+            frame.switchToRooms(hotelId);
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Por favor, ingresa un número válido.");
+        }
+
     }
 
     private void makeReservation() {
