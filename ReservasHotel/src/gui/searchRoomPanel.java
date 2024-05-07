@@ -13,7 +13,7 @@ public class searchRoomPanel extends JPanel {
     private ProgramaHotel ph;
     private int hotel_id;
 
-    public searchRoomPanel(HotelGUI frame, ProgramaHotel ph, int hotel_id) throws Exception {
+    public searchRoomPanel(HotelGUI frame, ProgramaHotel ph, int hotel_id, int user_id) throws Exception {
         this.frame = frame;
         this.ph = ph;
         this.hotel_id = hotel_id;
@@ -21,12 +21,22 @@ public class searchRoomPanel extends JPanel {
         add(new JLabel("Habitaciones disponibles"));
 
             try {
-                add(new JLabel(showAvailableRooms(hotel_id)));
+                JTextArea textArea = new JTextArea(showAvailableRooms(hotel_id).toString());
+                textArea.setEditable(false); // Si solo quieres mostrar la información
+                JScrollPane scrollPane = new JScrollPane(textArea); // Para manejar el desbordamiento de texto
+                JOptionPane.showMessageDialog(null, scrollPane); // Mostrar en un diálogo
+
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
         JButton backButton = new JButton("Salir");
-        backButton.addActionListener(e -> frame.showCard("Main"));
+        backButton.addActionListener(e -> {
+            try {
+                frame.switchToUserMenu(user_id);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });
         add(backButton);
     }
 
@@ -35,12 +45,18 @@ public class searchRoomPanel extends JPanel {
         // Implementación para mostrar habitaciones disponibles
         // Supongamos que muestra un diálogo con habitaciones
         ArrayList<habitaciones> habs = ph.getHabitaciones(hotel_id);
-        String message = "habitaciones disponibles:\n";
-        for (habitaciones hab : habs) {
-            message += "ID: " + hab.getId_hab() + " - " + hab.getTipo() + " - " + hab.getNum_habitacion() + "\n";
+        StringBuilder message = new StringBuilder("habitaciones disponibles:\n");
 
+        for (habitaciones hab : habs) {
+            message.append("\nID: ")
+                    .append(hab.getId_hab())
+                    .append(" - ")
+                    .append(hab.getTipo())
+                    .append(" - ")
+                    .append(hab.getNum_habitacion())
+                    .append("\n");
         }
-        return message;
+        return message.toString();
     }
 
 

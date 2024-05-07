@@ -64,7 +64,7 @@ public class UserMenuPanel extends JPanel {
         String input = JOptionPane.showInputDialog(this, "Elige IDHotel");
         try {
             int hotelId = Integer.parseInt(input);
-            frame.switchToRooms(hotelId);
+            frame.switchToRooms(hotelId, this.userID);
 
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Por favor, ingresa un número válido.");
