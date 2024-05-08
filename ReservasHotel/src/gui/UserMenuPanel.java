@@ -57,9 +57,11 @@ public class UserMenuPanel extends JPanel {
         ArrayList<hoteles> hotels = ph.getHoteles();
         String message = "Hoteles disponibles:\n";
         for (hoteles hotel : hotels) {
-
+            JButton hot = new JButton(hotel.getNombre());
+            add(hot);
             message += "ID: " + hotel.getHotel_id() + " - " + hotel.getNombre() + " - " + hotel.getUbicacion() + "\n";
         }
+        JOptionPane.showInputDialog(this,message);
         JOptionPane.showMessageDialog(this, message);
         String input = JOptionPane.showInputDialog(this, "Elige IDHotel");
         try {
