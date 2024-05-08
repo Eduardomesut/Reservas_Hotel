@@ -77,7 +77,6 @@ public class UserMenuPanel extends JPanel {
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Por favor, ingresa un número válido.");
         }
-
     }
 
     private void makeReservation() throws Exception {
@@ -87,17 +86,23 @@ public class UserMenuPanel extends JPanel {
         String roomID = JOptionPane.showInputDialog(this, "Ingrese ID de habitación:");
         String checkIn = JOptionPane.showInputDialog(this, "Fecha de ingreso (YYYY-MM-DD):");
         String checkOut = JOptionPane.showInputDialog(this, "Fecha de salida (YYYY-MM-DD):");
-        precio = ph.getPrecioByHabyFecha(Integer.parseInt(roomID), checkIn);
-        String valorHab = String.valueOf(JOptionPane.showConfirmDialog(this, precio + "Euros"));
-        try {
-            Reserva newReservation = new Reserva(userID, Integer.parseInt(roomID), checkIn, checkOut);
-            ph.addReserva(newReservation);
-            JOptionPane.showMessageDialog(this, "Reserva realizada con éxito!");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al hacer la reserva: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        precio = ph.getPrecioByHabyFecha(Integer.parseInt(roomID), checkIn, checkOut);
+        JOptionPane pago = new JOptionPane();
+        int respuesta = (pago.showConfirmDialog(this, "Precio: " + precio + " Euros", "Confirmación de reserva", JOptionPane.YES_NO_OPTION));
+        if (respuesta == JOptionPane.YES_OPTION){
+            try {
+                Reserva newReservation = new Reserva(userID, Integer.parseInt(roomID), checkIn, checkOut);
+                ph.addReserva(newReservation);
+                JOptionPane.showMessageDialog(this, "Reserva realizada con éxito!");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error al hacer la reserva: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else if (respuesta == JOptionPane.NO_OPTION) {
+            JOptionPane.showMessageDialog(this, "Reserva cancelada");
+        } else{
+            JOptionPane.showMessageDialog(this, "Saliendo" + pago.getInputValue().toString() + JOptionPane.ERROR_MESSAGE);
         }
     }
-
     private void showReservations() throws Exception {
         // Implementación para mostrar reservas
         ArrayList<Reserva> reservations = ph.getReservas(userID);

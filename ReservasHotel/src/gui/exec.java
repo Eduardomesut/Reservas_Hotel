@@ -76,7 +76,7 @@ public class exec {
         fechaIngreso = sc.nextLine();
         System.out.print("Fecha salida: ");
         fechaSalida = sc.nextLine();
-        precio = ph.getPrecioByHabyFecha(hab_id, fechaIngreso);
+        precio = ph.getPrecioByHabyFecha(hab_id, fechaIngreso, fechaSalida);
         System.out.println("El precio de la reserva sería: " + precio);
 
         Reserva nueva = new Reserva(id,hab_id,fechaIngreso,fechaSalida);

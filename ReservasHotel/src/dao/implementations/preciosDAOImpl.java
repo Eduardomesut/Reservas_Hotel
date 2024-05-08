@@ -27,7 +27,7 @@ public class preciosDAOImpl implements preciosDAO, AutoCloseable {
     }
 
     @Override
-    public precios getPrecio(int id_habitacion, String fecha_entrada) throws Exception {
+    public precios getPrecio(int id_habitacion, String fecha_entrada, String fecha_salida) throws Exception {
         precios nuevo = null;
         ResultSet rs = null;
         String sql = "SELECT id, temporada_alta, temporada_media, temporada_baja, id_habitacion FROM precios WHERE id_habitacion =?;";

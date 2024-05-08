@@ -8,6 +8,7 @@ import dao.implementations.preciosDAOImpl;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 public class ProgramaHotel {
@@ -125,18 +126,20 @@ public class ProgramaHotel {
         return false;
     }
 
-    public double getPrecioByHabyFecha(int id_habitacion, String fecha_entrada) throws Exception {
+    public double getPrecioByHabyFecha(int id_habitacion, String fecha_entrada, String fecha_salida) throws Exception {
         double precio = 0;
         try (preciosDAOImpl pr = new preciosDAOImpl();) {
-            precios nuevo = pr.getPrecio(id_habitacion, fecha_entrada);
-            LocalDate fecha = LocalDate.parse(fecha_entrada, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            int mes = fecha.getMonthValue();
+            precios nuevo = pr.getPrecio(id_habitacion, fecha_entrada, fecha_salida);
+            LocalDate fechaEntrada = LocalDate.parse(fecha_entrada, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            LocalDate fechaSalida = LocalDate.parse(fecha_salida, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            int diasReserva = (int)ChronoUnit.DAYS.between(fechaEntrada,fechaSalida);
+            int mes = fechaEntrada.getMonthValue();
             if (mes >= 6 && mes <= 8) {
-                precio = nuevo.getTemporada_alta();
+                precio = nuevo.getTemporada_alta() * diasReserva;
             } else if ((mes >= 3 && mes <= 5) || (mes >= 9 && mes <= 11)) {
-                precio = nuevo.getTemporada_media();
+                precio = nuevo.getTemporada_media() * diasReserva;
             } else {
-                precio = nuevo.getTemporada_baja();
+                precio = nuevo.getTemporada_baja() * diasReserva;
             }
         } catch (Exception e) {
             throw e;

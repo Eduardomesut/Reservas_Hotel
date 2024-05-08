@@ -26,7 +26,7 @@ public class LoginPanel extends JPanel {
         hola.setFont(hola.getFont().deriveFont(22f));
         hola.setText("Contraseña");
         add(hola);
-        JPasswordField password = new JPasswordField("Contraseña");
+        JPasswordField password = new JPasswordField();
         idTexto.setFont(idTexto.getFont().deriveFont(22f));
         add(password);
 
@@ -50,7 +50,9 @@ public class LoginPanel extends JPanel {
         if (ph.getIDCorrecto(id) && password.equals("edu")) {
             JOptionPane.showMessageDialog(this, "Inicio de sesión correcto. Bienvenido " + ph.nombre(id));
             frame.switchToUserMenu(id);
-        } else {
+        } else if (ph.getIDCorrecto(id) && !password.equals("edu")) {
+            JOptionPane.showMessageDialog(this, "Contraseña incorrecta, intente nuevamente.");
+        }else {
             JOptionPane.showMessageDialog(this, "ID incorrecto, intente nuevamente.");
         }
     }
