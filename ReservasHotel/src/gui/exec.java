@@ -69,12 +69,16 @@ public class exec {
         return id;
     }
     public static void addReserva (int id,int hab_id, ProgramaHotel ph, Scanner sc) throws Exception {
+        double precio = 0;
         String fechaIngreso;
         String fechaSalida;
         System.out.print("Fecha ingreso: ");
         fechaIngreso = sc.nextLine();
         System.out.print("Fecha salida: ");
         fechaSalida = sc.nextLine();
+        precio = ph.getPrecioByHabyFecha(hab_id, fechaIngreso);
+        System.out.println("El precio de la reserva sería: " + precio);
+
         Reserva nueva = new Reserva(id,hab_id,fechaIngreso,fechaSalida);
         ph.addReserva(nueva);
         System.out.println("Reserva realizada!! Muchas gracias!");

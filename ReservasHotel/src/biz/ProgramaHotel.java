@@ -4,7 +4,10 @@ import dao.implementations.ReservaDAOImpl;
 import dao.implementations.clientesDAOImpl;
 import dao.implementations.hotelesDAOImpl;
 import dao.implementations.habitacionesDAOImpl;
+import dao.implementations.preciosDAOImpl;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class ProgramaHotel {
@@ -120,6 +123,25 @@ public class ProgramaHotel {
             throw e;
         }
         return false;
+    }
+
+    public double getPrecioByHabyFecha(int id_habitacion, String fecha_entrada) throws Exception {
+        double precio = 0;
+        try (preciosDAOImpl pr = new preciosDAOImpl();) {
+            precios nuevo = pr.getPrecio(id_habitacion, fecha_entrada);
+            LocalDate fecha = LocalDate.parse(fecha_entrada, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            int mes = fecha.getMonthValue();
+            if (mes >= 6 && mes <= 8) {
+                precio = nuevo.getTemporada_alta();
+            } else if ((mes >= 3 && mes <= 5) || (mes >= 9 && mes <= 11)) {
+                precio = nuevo.getTemporada_media();
+            } else {
+                precio = nuevo.getTemporada_baja();
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+        return precio;
     }
 
 }

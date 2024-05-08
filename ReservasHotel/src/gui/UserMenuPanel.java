@@ -33,7 +33,13 @@ public class UserMenuPanel extends JPanel {
         add(searchRoomsButton);
 
         JButton makeReservationButton = new JButton("Hacer una reserva");
-        makeReservationButton.addActionListener(e -> makeReservation());
+        makeReservationButton.addActionListener(e -> {
+            try {
+                makeReservation();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });
         add(makeReservationButton);
 
         JButton viewReservationsButton = new JButton("Ver tus reservas");
@@ -74,12 +80,15 @@ public class UserMenuPanel extends JPanel {
 
     }
 
-    private void makeReservation() {
+    private void makeReservation() throws Exception {
+        double precio = 0;
         // Implementación para hacer una reserva
         // Mostramos un diálogo para obtener ID de habitación y fechas
         String roomID = JOptionPane.showInputDialog(this, "Ingrese ID de habitación:");
         String checkIn = JOptionPane.showInputDialog(this, "Fecha de ingreso (YYYY-MM-DD):");
         String checkOut = JOptionPane.showInputDialog(this, "Fecha de salida (YYYY-MM-DD):");
+        precio = ph.getPrecioByHabyFecha(Integer.parseInt(roomID), checkIn);
+        String valorHab = String.valueOf(JOptionPane.showConfirmDialog(this, precio + "Euros"));
         try {
             Reserva newReservation = new Reserva(userID, Integer.parseInt(roomID), checkIn, checkOut);
             ph.addReserva(newReservation);
