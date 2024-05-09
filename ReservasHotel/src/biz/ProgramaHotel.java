@@ -71,14 +71,18 @@ public class ProgramaHotel {
     // Aqui tenemos que hacer todo el addReserva para que luego utilize los datos de reserva para updatear al cliente
 
 
-    public ArrayList<Reserva> getReservas(int cliente_id) throws Exception {
+    public String getReservas(int cliente_id) throws Exception {
+        String message = "";
         ArrayList<Reserva> al = new ArrayList<>();
-        try (ReservaDAOImpl re = new ReservaDAOImpl();){
+        try (ReservaDAOImpl re = new ReservaDAOImpl();hotelesDAOImpl ho = new hotelesDAOImpl();){
             al = re.getReservas(cliente_id);
+            for (Reserva reser:al) {
+                message += ho.getNombreHotel(reser.getHabitacion_id()) + " :: " + reser + "\n";
+            }
         }catch (Exception e){
             throw e;
         }
-        return al;
+        return message;
     }
     public String nombre (int id_usuario) throws Exception{
         String nombre = "";

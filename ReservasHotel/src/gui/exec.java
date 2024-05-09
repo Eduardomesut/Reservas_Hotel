@@ -139,9 +139,6 @@ public class exec {
     //Poner en estas reservas el nombre del hotel a parte de la fecha y el tipo de habitacion
     public static void verReservas (int id, ProgramaHotel ph, Scanner sc) throws Exception {
         System.out.println("-------Reservas realizadas--------");
-        ArrayList<Reserva>re = ph.getReservas(id);
-        for (Reserva reser:re) {
-            System.out.println(reser);
-        }
+        System.out.println(ph.getReservas(id));
     }
 }

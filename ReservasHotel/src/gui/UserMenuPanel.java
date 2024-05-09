@@ -62,14 +62,11 @@ public class UserMenuPanel extends JPanel {
         // Supongamos que muestra un diálogo con habitaciones
         ArrayList<hoteles> hotels = ph.getHoteles();
         String message = "Hoteles disponibles:\n";
+
         for (hoteles hotel : hotels) {
-            JButton hot = new JButton(hotel.getNombre());
-            add(hot);
             message += "ID: " + hotel.getHotel_id() + " - " + hotel.getNombre() + " - " + hotel.getUbicacion() + "\n";
         }
-        JOptionPane.showInputDialog(this,message);
-        JOptionPane.showMessageDialog(this, message);
-        String input = JOptionPane.showInputDialog(this, "Elige IDHotel");
+        String input = JOptionPane.showInputDialog(this,message);
         try {
             int hotelId = Integer.parseInt(input);
             frame.switchToRooms(hotelId, this.userID);
@@ -105,11 +102,7 @@ public class UserMenuPanel extends JPanel {
     }
     private void showReservations() throws Exception {
         // Implementación para mostrar reservas
-        ArrayList<Reserva> reservations = ph.getReservas(userID);
-        String message = "Tus reservas:\n";
-        for (Reserva reservation : reservations) {
-            message += reservation.toString() + "\n";
-        }
+        String message = "Tus reservas:\n" + ph.getReservas(userID);;
         JOptionPane.showMessageDialog(this, message);
     }
 }
