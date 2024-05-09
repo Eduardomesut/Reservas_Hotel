@@ -19,7 +19,13 @@ public class MainPanel extends JPanel {
         add(btnLogin);
 
         JButton btnAdmin = new JButton("Modo Administrador");
-        btnAdmin.addActionListener(e -> frame.showCard("Login"));
+        btnAdmin.addActionListener(e -> {
+            try {
+                frame.switchToAdminMenu();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });
         add(btnAdmin);
 
         JButton btnExit = new JButton("Salir");

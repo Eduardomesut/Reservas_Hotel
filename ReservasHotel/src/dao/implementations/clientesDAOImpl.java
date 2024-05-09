@@ -29,16 +29,23 @@ public class clientesDAOImpl implements clientesDAO, AutoCloseable {
 Scanner sc = new Scanner(System.in);
 
     @Override
-    public ArrayList<clientes> getClientes() throws Exception {
+    public ArrayList<clientes> getClientes(String nombre) throws Exception {
         ArrayList<clientes> al = new ArrayList<clientes>();
         clientes c = null;
+        int r = 0;
         ResultSet rs = null;
-        String sql = "SELECT id, nombre, fechaNac, fecha_ingreso, fecha_salida FROM clientes;";
+        String sql = "SELECT nombre, fechaNac FROM clientes WHERE 1 = 1 ";
+        if (nombre != null && !nombre.equals("")){
+            sql = sql + " AND nombre LIKE ? ";
+        }
         try (PreparedStatement pst = con.prepareStatement(sql);){
+            if (nombre != null && !nombre.equals("")){
+                r++;
+                pst.setString(r,nombre + "%");
+            }
             rs = pst.executeQuery();
             while (rs.next()){
-                c = new clientes(rs.getInt("id"), rs.getString("nombre"), rs.getString("fechaNac"),
-                        rs.getString("fecha_ingreso"), rs.getString("fecha_salida"));
+                c = new clientes(rs.getString("nombre"), rs.getString("fechaNac"));
                 al.add(c);
             }
         }catch (Exception e){

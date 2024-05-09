@@ -38,10 +38,10 @@ public class ProgramaHotel {
     //Inicio de sesión
 
     //Pruebas desechable para sacar los clientes
-    public ArrayList<clientes> getClientes() throws Exception {
+    public ArrayList<clientes> getClientes(String nombre) throws Exception {
         ArrayList<clientes> al = new ArrayList<>();
         try (clientesDAOImpl c = new clientesDAOImpl();){
-            al = c.getClientes();
+            al = c.getClientes(nombre);
         } catch (Exception e) {
             throw e;
         }

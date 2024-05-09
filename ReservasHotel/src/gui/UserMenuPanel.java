@@ -2,10 +2,13 @@ package gui;
 
 import biz.ProgramaHotel;
 import biz.Reserva;
+import biz.habitaciones;
 import biz.hoteles;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class UserMenuPanel extends JPanel {
@@ -58,23 +61,41 @@ public class UserMenuPanel extends JPanel {
     }
 
     private void showAvailableRooms() throws Exception {
-        // Implementación para mostrar habitaciones disponibles
-        // Supongamos que muestra un diálogo con habitaciones
+        // Obtener la lista de hoteles
         ArrayList<hoteles> hotels = ph.getHoteles();
-        String message = "Hoteles disponibles:\n";
 
+        // Crear un panel para los botones
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(0, 1)); // Un botón por fila
+
+        // Crear un botón para cada hotel y agregarlo al panel
         for (hoteles hotel : hotels) {
-            message += "ID: " + hotel.getHotel_id() + " - " + hotel.getNombre() + " - " + hotel.getUbicacion() + "\n";
+            JButton button = new JButton(hotel.getNombre() + " - " + hotel.getUbicacion());
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    showRoomsForHotel(hotel.getHotel_id());
+                }
+            });
+            panel.add(button);
         }
-        String input = JOptionPane.showInputDialog(this,message);
-        try {
-            int hotelId = Integer.parseInt(input);
-            frame.switchToRooms(hotelId, this.userID);
 
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Por favor, ingresa un número válido.");
+        // Crear y mostrar el diálogo con los botones
+        JScrollPane scrollPane = new JScrollPane(panel); // Para manejar el desbordamiento de texto
+        JOptionPane.showMessageDialog(null, scrollPane, "Seleccione un hotel", JOptionPane.PLAIN_MESSAGE);
+    }
+
+    private void showRoomsForHotel(int hotel_id) {
+        try {
+            JTextArea textArea = new JTextArea(showAvailableRooms2(hotel_id).toString());
+            textArea.setEditable(false); // Si solo quieres mostrar la información
+            JScrollPane scrollPane = new JScrollPane(textArea); // Para manejar el desbordamiento de texto
+            JOptionPane.showMessageDialog(null, scrollPane, "Habitaciones disponibles", JOptionPane.PLAIN_MESSAGE);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
     }
+
 
     private void makeReservation() throws Exception {
         double precio = 0;
@@ -102,7 +123,26 @@ public class UserMenuPanel extends JPanel {
     }
     private void showReservations() throws Exception {
         // Implementación para mostrar reservas
-        String message = "Tus reservas:\n" + ph.getReservas(userID);;
+        String message = "Tus reservas:\n" + ph.getReservas(userID);
         JOptionPane.showMessageDialog(this, message);
+    }
+
+    private String showAvailableRooms2(int hotel_id) throws Exception {
+
+        // Implementación para mostrar habitaciones disponibles
+        // Supongamos que muestra un diálogo con habitaciones
+        ArrayList<habitaciones> habs = ph.getHabitaciones(hotel_id);
+        StringBuilder message = new StringBuilder("habitaciones disponibles:\n");
+
+        for (habitaciones hab : habs) {
+            message.append("\nID: ")
+                    .append(hab.getId_hab())
+                    .append(" - ")
+                    .append(hab.getTipo())
+                    .append(" - ")
+                    .append(hab.getNum_habitacion())
+                    .append("\n");
+        }
+        return message.toString();
     }
 }
