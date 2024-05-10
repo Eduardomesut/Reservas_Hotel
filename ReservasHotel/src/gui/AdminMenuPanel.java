@@ -4,7 +4,7 @@ import biz.*;
 
 import javax.swing.*;
 import biz.ProgramaHotel;
-
+import biz.Reserva;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -45,13 +45,29 @@ public class AdminMenuPanel extends JPanel {
         ArrayList<clientes>al = new ArrayList<>();
         String nombre = JOptionPane.showInputDialog(this, "Nombre a buscar:");
         al = ph.getClientes(nombre);
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(0, 1)); // Un botón por fila
         String message = "Clientes:\n";
         for (clientes cli:al) {
-            message += cli.getNombre() + " :: " +cli.getFechaNac() + "\n";
+            JButton button = new JButton(cli.getNombre() + " - " + cli.getFechaNac());
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        showReservasClientes(cli.getNombre(), cli.getFechaNac());
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            });
+            panel.add(button);
         }
-        JOptionPane.showMessageDialog(this, message);
+        JScrollPane scrollPane = new JScrollPane(panel);
+        JOptionPane.showMessageDialog(null, scrollPane, "Selecciona un cliente", JOptionPane.PLAIN_MESSAGE);
 
     }
-
-
+    private void showReservasClientes (String nombre, String fechaNac) throws Exception{
+        StringBuilder message = new StringBuilder("Reservas:\n" + ph.getReservasnombre(nombre,fechaNac));
+        JOptionPane.showMessageDialog(this, message);
+    }
 }
