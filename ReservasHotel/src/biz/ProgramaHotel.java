@@ -161,5 +161,11 @@ public class ProgramaHotel {
         }
         return al;
     }
-
+    public void updateReserva (Reserva reser, int nuevaHab, String nuevaFentrada, String nuevaFsalida) throws Exception{
+     try (ReservaDAOImpl re = new ReservaDAOImpl();){
+         re.updateReserva(reser, nuevaHab, nuevaFentrada, nuevaFsalida);
+     }catch (Exception e){
+         throw e;
+     }
+    }
 }

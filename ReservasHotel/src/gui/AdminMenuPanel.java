@@ -79,11 +79,7 @@ public class AdminMenuPanel extends JPanel {
                 public void actionPerformed(ActionEvent e) {
                     try {
                         //editarReserva
-
-
-                        
-
-
+                        editarReserva(reser);
 
                     } catch (Exception ex) {
                         throw new RuntimeException(ex);
@@ -94,5 +90,13 @@ public class AdminMenuPanel extends JPanel {
         }
         JScrollPane scrollPane = new JScrollPane(panel);
         JOptionPane.showMessageDialog(null, scrollPane, "Selecciona una reserva a editar", JOptionPane.PLAIN_MESSAGE);
+    }
+
+    private void editarReserva (Reserva reser) throws Exception {
+        int id_habitacion = Integer.parseInt(JOptionPane.showInputDialog(this, "Habitación que asignar:"));
+        String fechaEntrada = JOptionPane.showInputDialog(this, "Nueva fecha de entrada:");
+        String fechaSalida = JOptionPane.showInputDialog(this, "Nueva fecha de salida:");
+        ph.updateReserva(reser, id_habitacion, fechaEntrada, fechaSalida);
+
     }
 }
