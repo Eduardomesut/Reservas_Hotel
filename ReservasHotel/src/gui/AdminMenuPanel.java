@@ -37,10 +37,7 @@ public class AdminMenuPanel extends JPanel {
         JButton backButton = new JButton("Salir");
         backButton.addActionListener(e -> frame.showCard("Main"));
         add(backButton);
-
-
     }
-
     private void listarClientes() throws Exception {
         ArrayList<clientes>al = new ArrayList<>();
         String nombre = JOptionPane.showInputDialog(this, "Nombre a buscar:");
@@ -73,20 +70,29 @@ public class AdminMenuPanel extends JPanel {
         panel.setLayout(new GridLayout(0, 1)); // Un botón por fila
         String message = "Reservas:\n";
         for (Reserva reser:al) {
-            JButton button = new JButton("ID: " + reser.getCliente_id() + " - " + reser.getFecha_ingreso() + " - " + reser.getFecha_salida());
-            button.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    try {
-                        //editarReserva
-                        editarReserva(reser);
+            JPanel reservaPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            JButton editButton = new JButton("Editar");
+            JButton deleteButton = new JButton("Eliminar");
 
-                    } catch (Exception ex) {
-                        throw new RuntimeException(ex);
-                    }
+            editButton.addActionListener(e -> {
+                try {
+                    editarReserva(reser);
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
                 }
             });
-            panel.add(button);
+            deleteButton.addActionListener(e -> {
+                try {
+                    eliminarReserva(reser);
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+            });
+
+            reservaPanel.add(new JLabel("ID: " + reser.getCliente_id() + " - " + reser.getFecha_ingreso() + " - " + reser.getFecha_salida()));
+            reservaPanel.add(editButton);
+            reservaPanel.add(deleteButton);
+            panel.add(reservaPanel);
         }
         JScrollPane scrollPane = new JScrollPane(panel);
         JOptionPane.showMessageDialog(null, scrollPane, "Selecciona una reserva a editar", JOptionPane.PLAIN_MESSAGE);
@@ -97,6 +103,13 @@ public class AdminMenuPanel extends JPanel {
         String fechaEntrada = JOptionPane.showInputDialog(this, "Nueva fecha de entrada:");
         String fechaSalida = JOptionPane.showInputDialog(this, "Nueva fecha de salida:");
         ph.updateReserva(reser, id_habitacion, fechaEntrada, fechaSalida);
+        JOptionPane.showMessageDialog(this, "Reserva cambiada correctamente");
+
+
+    }
+    private void eliminarReserva (Reserva reser) throws Exception {
+
+        //Borrar reserva
 
     }
 }
