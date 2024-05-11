@@ -168,4 +168,11 @@ public class ProgramaHotel {
          throw e;
      }
     }
+    public void deleteReserva (Reserva reser) throws Exception {
+        try (ReservaDAOImpl re = new ReservaDAOImpl();){
+            re.deleteReserva(reser);
+        }catch (Exception e){
+            throw e;
+        }
+    }
 }

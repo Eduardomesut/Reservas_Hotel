@@ -153,6 +153,21 @@ public class ReservaDAOImpl implements ReservaDAO, AutoCloseable {
     }
 
     @Override
+    public int deleteReserva(Reserva reser) throws Exception {
+        int c = 0;
+        int id_reserva = reser.getReserva_id();
+        String sql = "DELETE FROM reservas WHERE reserva_id = ?";
+        try (PreparedStatement pst = con.prepareStatement(sql);){
+            pst.setInt(1,id_reserva);
+            pst.executeUpdate();
+        }catch (Exception e){
+            throw e;
+        }
+
+        return c;
+    }
+
+    @Override
     public void close() throws Exception {
         con.close();
     }

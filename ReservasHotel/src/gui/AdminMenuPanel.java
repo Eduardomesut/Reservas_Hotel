@@ -108,8 +108,8 @@ public class AdminMenuPanel extends JPanel {
 
     }
     private void eliminarReserva (Reserva reser) throws Exception {
-
-        //Borrar reserva
+        ph.deleteReserva(reser);
+        JOptionPane.showMessageDialog(this, "Reserva eliminada correctamente");
 
     }
 }
