@@ -67,7 +67,32 @@ public class AdminMenuPanel extends JPanel {
 
     }
     private void showReservasClientes (String nombre, String fechaNac) throws Exception{
-        StringBuilder message = new StringBuilder("Reservas:\n" + ph.getReservasnombre(nombre,fechaNac));
-        JOptionPane.showMessageDialog(this, message);
+        ArrayList<Reserva>al = new ArrayList<>();
+        al = ph.getReservasnombre(nombre, fechaNac);
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(0, 1)); // Un botón por fila
+        String message = "Reservas:\n";
+        for (Reserva reser:al) {
+            JButton button = new JButton("ID: " + reser.getCliente_id() + " - " + reser.getFecha_ingreso() + " - " + reser.getFecha_salida());
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        //editarReserva
+
+
+                        
+
+
+
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            });
+            panel.add(button);
+        }
+        JScrollPane scrollPane = new JScrollPane(panel);
+        JOptionPane.showMessageDialog(null, scrollPane, "Selecciona una reserva a editar", JOptionPane.PLAIN_MESSAGE);
     }
 }

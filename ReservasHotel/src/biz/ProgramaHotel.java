@@ -151,18 +151,15 @@ public class ProgramaHotel {
         return precio;
     }
 
-    public String getReservasnombre(String nombre, String fechaNac) throws Exception {
-        String message = "";
+    public ArrayList<Reserva> getReservasnombre(String nombre, String fechaNac) throws Exception {
         ArrayList<Reserva> al = new ArrayList<>();
         try (ReservaDAOImpl re = new ReservaDAOImpl(); hotelesDAOImpl ho = new hotelesDAOImpl();){
             al = re.getReservas(nombre, fechaNac);
-            for (Reserva reser:al) {
-                message += ho.getNombreHotel(reser.getHabitacion_id()) + " :: " + reser + "\n";
-            }
+
         }catch (Exception e){
             throw e;
         }
-        return message;
+        return al;
     }
 
 }
