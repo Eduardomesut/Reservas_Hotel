@@ -4,12 +4,20 @@ import biz.ProgramaHotel;
 import biz.Reserva;
 import biz.habitaciones;
 import biz.hoteles;
+import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
+import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
+import net.sourceforge.jdatepicker.impl.UtilDateModel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Properties;
 
 public class UserMenuPanel extends JPanel {
     private HotelGUI frame;
@@ -95,19 +103,42 @@ public class UserMenuPanel extends JPanel {
             throw new RuntimeException(ex);
         }
     }
-
-
     private void makeReservation() throws Exception {
         double precio = 0;
         // Implementación para hacer una reserva
-        // Mostramos un diálogo para obtener ID de habitación y fechas
+        // Mostramos un diálogo para obtener ID de habitación
         String roomID = JOptionPane.showInputDialog(this, "Ingrese ID de habitación:");
-        String checkIn = JOptionPane.showInputDialog(this, "Fecha de ingreso (YYYY-MM-DD):");
-        String checkOut = JOptionPane.showInputDialog(this, "Fecha de salida (YYYY-MM-DD):");
+
+        // Configuración común para las propiedades de los date pickers
+        Properties properties = new Properties();
+        properties.put("text.today", "Today");
+        properties.put("text.month", "Month");
+        properties.put("text.year", "Year");
+
+        // Modelo de fecha y panel para check-in
+        UtilDateModel modelCheckIn = new UtilDateModel();
+        JDatePanelImpl datePanelCheckIn = new JDatePanelImpl(modelCheckIn);
+        JDatePickerImpl datePickerCheckIn = new JDatePickerImpl(datePanelCheckIn, new DateLabelFormatter());
+
+        // Modelo de fecha y panel para check-out
+        UtilDateModel modelCheckOut = new UtilDateModel();
+        JDatePanelImpl datePanelCheckOut = new JDatePanelImpl(modelCheckOut);
+        JDatePickerImpl datePickerCheckOut = new JDatePickerImpl(datePanelCheckOut, new DateLabelFormatter());
+
+        // Mostrar los date pickers en un JOptionPane para seleccionar fechas
+        JOptionPane.showConfirmDialog(null, datePickerCheckIn, "Fecha de ingreso:", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        JOptionPane.showConfirmDialog(null, datePickerCheckOut, "Fecha de salida:", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+        Date checkInDate = (Date) datePickerCheckIn.getModel().getValue();
+        Date checkOutDate = (Date) datePickerCheckOut.getModel().getValue();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String checkIn = format.format(checkInDate);
+        String checkOut = format.format(checkOutDate);
+
         precio = ph.getPrecioByHabyFecha(Integer.parseInt(roomID), checkIn, checkOut);
         JOptionPane pago = new JOptionPane();
-        int respuesta = (pago.showConfirmDialog(this, "Precio: " + precio + " Euros", "Confirmación de reserva", JOptionPane.YES_NO_OPTION));
-        if (respuesta == JOptionPane.YES_OPTION){
+        int respuesta = pago.showConfirmDialog(this, "Precio: " + precio + " Euros", "Confirmación de reserva", JOptionPane.YES_NO_OPTION);
+        if (respuesta == JOptionPane.YES_OPTION) {
             try {
                 Reserva newReservation = new Reserva(userID, Integer.parseInt(roomID), checkIn, checkOut);
                 ph.addReserva(newReservation);
@@ -117,8 +148,8 @@ public class UserMenuPanel extends JPanel {
             }
         } else if (respuesta == JOptionPane.NO_OPTION) {
             JOptionPane.showMessageDialog(this, "Reserva cancelada");
-        } else{
-            JOptionPane.showMessageDialog(this, "Saliendo" + pago.getInputValue().toString() + JOptionPane.ERROR_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Saliendo");
         }
     }
     private void showReservations() throws Exception {
@@ -144,5 +175,24 @@ public class UserMenuPanel extends JPanel {
                     .append("\n");
         }
         return message.toString();
+    }
+
+    public static class DateLabelFormatter extends JFormattedTextField.AbstractFormatter {
+        private String datePattern = "yyyy-MM-dd";
+        private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
+
+        @Override
+        public Object stringToValue(String text) throws ParseException {
+            return dateFormatter.parseObject(text);
+        }
+
+        @Override
+        public String valueToString(Object value) throws ParseException {
+            if (value != null) {
+                Calendar cal = (Calendar) value;
+                return dateFormatter.format(cal.getTime());
+            }
+            return "";
+        }
     }
 }

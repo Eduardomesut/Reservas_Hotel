@@ -5,6 +5,7 @@ import dao.implementations.clientesDAOImpl;
 import dao.implementations.hotelesDAOImpl;
 import dao.implementations.habitacionesDAOImpl;
 import dao.implementations.preciosDAOImpl;
+import dao.implementations.passwordDAOImpl;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -171,6 +172,13 @@ public class ProgramaHotel {
     public void deleteReserva (Reserva reser) throws Exception {
         try (ReservaDAOImpl re = new ReservaDAOImpl();){
             re.deleteReserva(reser);
+        }catch (Exception e){
+            throw e;
+        }
+    }
+    public void addPassword(int cliente_id, String textPass) throws Exception{
+        try (passwordDAOImpl pass = new passwordDAOImpl();){
+            pass.addPassword(cliente_id,textPass);
         }catch (Exception e){
             throw e;
         }

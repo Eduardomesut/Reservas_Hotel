@@ -1,15 +1,23 @@
 package gui;
 
 import biz.*;
-
 import javax.swing.*;
 import biz.ProgramaHotel;
 import biz.Reserva;
+import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
+import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
+import net.sourceforge.jdatepicker.impl.UtilDateModel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Properties;
 
 public class AdminMenuPanel extends JPanel {
     private HotelGUI frame;
@@ -98,18 +106,62 @@ public class AdminMenuPanel extends JPanel {
         JOptionPane.showMessageDialog(null, scrollPane, "Selecciona una reserva a editar", JOptionPane.PLAIN_MESSAGE);
     }
 
-    private void editarReserva (Reserva reser) throws Exception {
+    private void editarReserva(Reserva reser) throws Exception {
         int id_habitacion = Integer.parseInt(JOptionPane.showInputDialog(this, "Habitación que asignar:"));
-        String fechaEntrada = JOptionPane.showInputDialog(this, "Nueva fecha de entrada:");
-        String fechaSalida = JOptionPane.showInputDialog(this, "Nueva fecha de salida:");
-        ph.updateReserva(reser, id_habitacion, fechaEntrada, fechaSalida);
-        JOptionPane.showMessageDialog(this, "Reserva cambiada correctamente");
 
+        // Modelo de fecha
+        UtilDateModel modelEntrada = new UtilDateModel();
+        UtilDateModel modelSalida = new UtilDateModel();
+        Properties p = new Properties();
+        p.put("text.today", "Today");
+        p.put("text.month", "Month");
+        p.put("text.year", "Year");
 
+        // Panel de fecha
+        JDatePanelImpl datePanelEntrada = new JDatePanelImpl(modelEntrada);
+        JDatePanelImpl datePanelSalida = new JDatePanelImpl(modelSalida);
+
+        // DatePicker
+        JDatePickerImpl datePickerEntrada = new JDatePickerImpl(datePanelEntrada, new DateLabelFormatter());
+        JDatePickerImpl datePickerSalida = new JDatePickerImpl(datePanelSalida, new DateLabelFormatter());
+
+        // Mostrar los pickers en un JOptionPane
+        int result = JOptionPane.showConfirmDialog(null, datePickerEntrada, "Nueva fecha de entrada:", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if (result == JOptionPane.OK_OPTION) {
+            Date fechaEntrada = (Date) datePickerEntrada.getModel().getValue();
+            result = JOptionPane.showConfirmDialog(null, datePickerSalida, "Nueva fecha de salida:", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if (result == JOptionPane.OK_OPTION) {
+                Date fechaSalida = (Date) datePickerSalida.getModel().getValue();
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                String strFechaEntrada = format.format(fechaEntrada);
+                String strFechaSalida = format.format(fechaSalida);
+
+                ph.updateReserva(reser, id_habitacion, strFechaEntrada, strFechaSalida);
+                JOptionPane.showMessageDialog(this, "Reserva cambiada correctamente");
+            }
+        }
+    }
+    // Clase para formatear la fecha
+    public class DateLabelFormatter extends JFormattedTextField.AbstractFormatter {
+        private String datePattern = "yyyy-MM-dd";
+        private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
+
+        @Override
+        public Object stringToValue(String text) throws ParseException {
+            return dateFormatter.parseObject(text);
+        }
+
+        @Override
+        public String valueToString(Object value) throws ParseException {
+            if (value != null) {
+                Calendar cal = (Calendar) value;
+                return dateFormatter.format(cal.getTime());
+            }
+            return "";
+        }
     }
     private void eliminarReserva (Reserva reser) throws Exception {
         ph.deleteReserva(reser);
         JOptionPane.showMessageDialog(this, "Reserva eliminada correctamente");
-
     }
 }

@@ -47,7 +47,7 @@ public class LoginPanel extends JPanel {
         add(backButton);
     }
     private void loginUser(int id, String password) throws Exception {
-        if (ph.getIDCorrecto(id) && password.equals("edu")) {
+        if (ph.getIDCorrecto(id) && password.equals("edu")/* || password.equals(ph.getpassword) */) {
             JOptionPane.showMessageDialog(this, "Inicio de sesión correcto. Bienvenido " + ph.nombre(id));
             frame.switchToUserMenu(id);
         } else if (ph.getIDCorrecto(id) && !password.equals("edu")) {
