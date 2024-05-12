@@ -183,4 +183,13 @@ public class ProgramaHotel {
             throw e;
         }
     }
+    public String getPassword (int id_cliente) throws Exception{
+        String password = null;
+        try (passwordDAOImpl pass = new passwordDAOImpl();){
+            password = pass.getPasswordByCliente(id_cliente);
+        }catch (Exception e){
+            throw e;
+        }
+        return password;
+    }
 }
