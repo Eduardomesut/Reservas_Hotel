@@ -41,6 +41,10 @@ public class RegisterPanel extends JPanel {
         add(new JLabel("Introduce una contraseña: "));
         JPasswordField passwordField = new JPasswordField();
         add(passwordField);
+        //Confirmar contraseña
+        add(new JLabel("Vuelve a introducir la contraseña: "));
+        JPasswordField passwordFieldConf = new JPasswordField();
+        add(passwordFieldConf);
 
         // Botón de registro
         JButton registerButton = new JButton("Registrarse");
@@ -51,7 +55,9 @@ public class RegisterPanel extends JPanel {
             String dob = dateFormat.format(selectedDate);
             char[] passwordArray = passwordField.getPassword();
             String passwordString = new String(passwordArray);
-            registerUser(nameField.getText(), dob,passwordString);
+            char[] passwordArrayConf = passwordFieldConf.getPassword();
+            String passwordStringConf = new String(passwordArrayConf);
+            registerUser(nameField.getText(), dob,passwordString,passwordStringConf);
         });
         add(registerButton);
 
@@ -60,22 +66,24 @@ public class RegisterPanel extends JPanel {
         backButton.addActionListener(e -> frame.showCard("Main"));
         add(backButton);
     }
-
-    private void registerUser(String name, String dob, String textPass) {
+    private void registerUser(String name, String dob, String textPass, String textPassConf) {
         try {
+            if (textPass.equals(textPassConf)){
             clientes newClient = new clientes(name, dob);
             ph.addCliente(newClient);
             int userId = ph.darIDNHUsuario(name, dob);
-            if (userId != -1) {
-                ph.addPassword(userId, textPass);
-                JOptionPane.showMessageDialog(this, "Registrado con éxito. Su ID de usuario es: " + userId + ". Bienvenido " + name);
-                frame.switchToUserMenu(userId);
-            } else {
+                if (userId != -1) {
+                    ph.addPassword(userId, textPass);
+                    JOptionPane.showMessageDialog(this, "Registrado con éxito. Su ID de usuario es: " + userId + ". Bienvenido " + name);
+                    frame.switchToUserMenu(userId);
+                 } else {
                 JOptionPane.showMessageDialog(this, "Error en la generación de su ID, vuelva a intentarlo");
+                }
+            }else {
+                JOptionPane.showMessageDialog(this, "La contraseña no coincide pruebe otra vez");
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
 }
