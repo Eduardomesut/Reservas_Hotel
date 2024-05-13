@@ -46,7 +46,8 @@ public class UserMenuPanel extends JPanel {
         JButton makeReservationButton = new JButton("Hacer una reserva");
         makeReservationButton.addActionListener(e -> {
             try {
-                makeReservation();
+                String roomID = JOptionPane.showInputDialog(this, "Ingrese ID de habitación:");
+                makeReservation(roomID);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
@@ -79,11 +80,8 @@ public class UserMenuPanel extends JPanel {
         // Crear un botón para cada hotel y agregarlo al panel
         for (hoteles hotel : hotels) {
             JButton button = new JButton(hotel.getNombre() + " - " + hotel.getUbicacion());
-            button.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    showRoomsForHotel(hotel.getHotel_id());
-                }
+            button.addActionListener(e -> {
+                showRoomsForHotel(hotel.getHotel_id());
             });
             panel.add(button);
         }
@@ -95,20 +93,57 @@ public class UserMenuPanel extends JPanel {
 
     private void showRoomsForHotel(int hotel_id) {
         try {
-            JTextArea textArea = new JTextArea(showAvailableRooms2(hotel_id).toString());
-            textArea.setEditable(false); // Si solo quieres mostrar la información
-            JScrollPane scrollPane = new JScrollPane(textArea); // Para manejar el desbordamiento de texto
-            JOptionPane.showMessageDialog(null, scrollPane, "Habitaciones disponibles", JOptionPane.PLAIN_MESSAGE);
+            ImageIcon imageIcon;
+            // Cargamos la imagen de fondo.
+            if (hotel_id == 1){
+                imageIcon = new ImageIcon("C:\\Users\\Eduardo\\Reservas_Hotel\\ReservasHotel\\img\\hotel.jpg");
+            } else {
+                imageIcon = new ImageIcon("C:\\Users\\Eduardo\\Reservas_Hotel\\ReservasHotel\\img\\dubai.jpg") ;
+            }
+            JLabel label = new JLabel(imageIcon);
+            // Creamos el JFrame con la imagen de fondo.
+            JFrame frame = new JFrame("Habitaciones Disponibles en el Hotel");
+            frame.setSize(400, 400);
+            frame.setLayout(new BorderLayout());
+
+            // Creamos un panel transparente para el texto.
+            JPanel textPanel = new JPanel();
+            textPanel.setOpaque(false);
+            textPanel.setLayout(new BorderLayout());
+
+            // Area de texto para mostrar la lista de habitaciones.
+            //showAvailableRooms2(hotel_id);
+            ArrayList<habitaciones> habs = ph.getHabitaciones(hotel_id);
+            StringBuilder message = new StringBuilder("habitaciones disponibles:\n");
+            textPanel.setLayout(new GridLayout(0,1));
+
+            for (habitaciones hab:habs) {
+                JButton button = new JButton(hab.getNum_habitacion() + " - " + hab.getTipo());
+                String habitacion = hab.getId_hab()+"";
+                button.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        try {
+                            makeReservation(habitacion);
+                        } catch (Exception ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+                });
+                textPanel.add(button);
+            }
+            // Añadimos la imagen al frame y luego el panel de texto encima.
+            frame.add(label, BorderLayout.CENTER);
+            frame.add(textPanel, BorderLayout.SOUTH);
+            frame.setVisible(true);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
     }
-    private void makeReservation() throws Exception {
+    private void makeReservation(String id_habitacion) throws Exception {
         double precio = 0;
         // Implementación para hacer una reserva
         // Mostramos un diálogo para obtener ID de habitación
-        String roomID = JOptionPane.showInputDialog(this, "Ingrese ID de habitación:");
-
         // Configuración común para las propiedades de los date pickers
         Properties properties = new Properties();
         properties.put("text.today", "Today");
@@ -135,12 +170,12 @@ public class UserMenuPanel extends JPanel {
         String checkIn = format.format(checkInDate);
         String checkOut = format.format(checkOutDate);
 
-        precio = ph.getPrecioByHabyFecha(Integer.parseInt(roomID), checkIn, checkOut);
+        precio = ph.getPrecioByHabyFecha(Integer.parseInt(id_habitacion), checkIn, checkOut);
         JOptionPane pago = new JOptionPane();
         int respuesta = pago.showConfirmDialog(this, "Precio: " + precio + " Euros", "Confirmación de reserva", JOptionPane.YES_NO_OPTION);
         if (respuesta == JOptionPane.YES_OPTION) {
             try {
-                Reserva newReservation = new Reserva(userID, Integer.parseInt(roomID), checkIn, checkOut);
+                Reserva newReservation = new Reserva(userID, Integer.parseInt(id_habitacion), checkIn, checkOut);
                 ph.addReserva(newReservation);
                 JOptionPane.showMessageDialog(this, "Reserva realizada con éxito!");
             } catch (Exception e) {
@@ -157,8 +192,7 @@ public class UserMenuPanel extends JPanel {
         String message = "Tus reservas:\n" + ph.getReservas(userID);
         JOptionPane.showMessageDialog(this, message);
     }
-
-    private String showAvailableRooms2(int hotel_id) throws Exception {
+    private void showAvailableRooms2(int hotel_id) throws Exception {
 
         // Implementación para mostrar habitaciones disponibles
         // Supongamos que muestra un diálogo con habitaciones
@@ -174,9 +208,7 @@ public class UserMenuPanel extends JPanel {
                     .append(hab.getNum_habitacion())
                     .append("\n");
         }
-        return message.toString();
     }
-
     public static class DateLabelFormatter extends JFormattedTextField.AbstractFormatter {
         private String datePattern = "yyyy-MM-dd";
         private SimpleDateFormat dateFormatter = new SimpleDateFormat(datePattern);
