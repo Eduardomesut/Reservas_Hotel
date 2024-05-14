@@ -9,6 +9,7 @@ import java.util.Arrays;
 public class LoginPanel extends JPanel {
     private HotelGUI frame;
     private ProgramaHotel ph;
+    int numIntentos = 0;
 
     public LoginPanel(HotelGUI frame, ProgramaHotel ph) {
         this.frame = frame;
@@ -47,13 +48,29 @@ public class LoginPanel extends JPanel {
         add(backButton);
     }
     private void loginUser(int id, String password) throws Exception {
-        if (ph.getIDCorrecto(id) && password.equals("edu")) {
-            JOptionPane.showMessageDialog(this, "Inicio de sesión correcto. Bienvenido " + ph.nombre(id));
-            frame.switchToUserMenu(id);
-        } else if (ph.getIDCorrecto(id) && !password.equals("edu")) {
-            JOptionPane.showMessageDialog(this, "Contraseña incorrecta, intente nuevamente.");
+        if (this.getNumIntentos() <= 5){
+            if (ph.getIDCorrecto(id) && (password.equals("edu") || password.equals(ph.getPassword(id)))) {
+                this.setNumIntentos(0);
+                JOptionPane.showMessageDialog(this, "Inicio de sesión correcto. Bienvenido " + ph.nombre(id));
+                frame.switchToUserMenu(id);
+            } else if (ph.getIDCorrecto(id) && !password.equals("edu") && !password.equals(ph.getPassword(id))) {
+                this.setNumIntentos(this.getNumIntentos() + 1);
+                JOptionPane.showMessageDialog(this, "Contraseña incorrecta, intente nuevamente.");
+            }else {
+                JOptionPane.showMessageDialog(this, "ID incorrecto, intente nuevamente.");
+            }
         }else {
-            JOptionPane.showMessageDialog(this, "ID incorrecto, intente nuevamente.");
+            JOptionPane.showMessageDialog(this, "Ha utilizado demasiados intentos para acceder, su cuenta se ha bloqueado por seguridad");
+            this.setNumIntentos(0);
+            frame.showCard("Main");
         }
+    }
+
+    public int getNumIntentos() {
+        return numIntentos;
+    }
+
+    public void setNumIntentos(int numIntentos) {
+        this.numIntentos = numIntentos;
     }
 }

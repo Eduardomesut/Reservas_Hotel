@@ -43,6 +43,17 @@ public class HotelGUI extends JFrame {
         cardLayout.show(cardPanel, "UserMenu");
     }
 
+    public void switchToAdminMenu() throws Exception {
+        String adminMenuKey = "Admin";
+        // Remueve el panel si ya existe
+        cardPanel.remove(cardPanel.getComponentCount() - 1);
+        AdminMenuPanel adminMenuPanel = new AdminMenuPanel(this, ph);
+        cardPanel.add(adminMenuPanel, adminMenuKey);
+        cardLayout.show(cardPanel, adminMenuKey);
+    }
+
+
+
     public void switchToUserMenu(int userID) throws Exception {
         String userMenuKey = "UserMenu";
         // Remueve el panel si ya existe
@@ -52,14 +63,7 @@ public class HotelGUI extends JFrame {
         cardLayout.show(cardPanel, userMenuKey);
     }
 
-    public void switchToRooms(int hotel_id, int user_id) throws Exception {
-        String userMenuKey = "Rooms";
-        // Remueve el panel si ya existe
-        cardPanel.remove(cardPanel.getComponentCount() - 1);
-        searchRoomPanel searchRoomPanel = new searchRoomPanel(this, ph, hotel_id, user_id);
-        cardPanel.add(searchRoomPanel, userMenuKey);
-        cardLayout.show(cardPanel, userMenuKey);
-    }
+
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             HotelGUI frame = new HotelGUI();

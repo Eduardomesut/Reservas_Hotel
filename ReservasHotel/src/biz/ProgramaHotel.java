@@ -5,6 +5,7 @@ import dao.implementations.clientesDAOImpl;
 import dao.implementations.hotelesDAOImpl;
 import dao.implementations.habitacionesDAOImpl;
 import dao.implementations.preciosDAOImpl;
+import dao.implementations.passwordDAOImpl;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -38,10 +39,10 @@ public class ProgramaHotel {
     //Inicio de sesión
 
     //Pruebas desechable para sacar los clientes
-    public ArrayList<clientes> getClientes() throws Exception {
+    public ArrayList<clientes> getClientes(String nombre) throws Exception {
         ArrayList<clientes> al = new ArrayList<>();
         try (clientesDAOImpl c = new clientesDAOImpl();){
-            al = c.getClientes();
+            al = c.getClientes(nombre);
         } catch (Exception e) {
             throw e;
         }
@@ -71,14 +72,18 @@ public class ProgramaHotel {
     // Aqui tenemos que hacer todo el addReserva para que luego utilize los datos de reserva para updatear al cliente
 
 
-    public ArrayList<Reserva> getReservas(int cliente_id) throws Exception {
+    public String getReservas(int cliente_id) throws Exception {
+        String message = "";
         ArrayList<Reserva> al = new ArrayList<>();
-        try (ReservaDAOImpl re = new ReservaDAOImpl();){
+        try (ReservaDAOImpl re = new ReservaDAOImpl();hotelesDAOImpl ho = new hotelesDAOImpl();){
             al = re.getReservas(cliente_id);
+            for (Reserva reser:al) {
+                message += ho.getNombreHotel(reser.getHabitacion_id()) + " :: " + reser + "\n";
+            }
         }catch (Exception e){
             throw e;
         }
-        return al;
+        return message;
     }
     public String nombre (int id_usuario) throws Exception{
         String nombre = "";
@@ -147,4 +152,44 @@ public class ProgramaHotel {
         return precio;
     }
 
+    public ArrayList<Reserva> getReservasnombre(String nombre, String fechaNac) throws Exception {
+        ArrayList<Reserva> al = new ArrayList<>();
+        try (ReservaDAOImpl re = new ReservaDAOImpl(); hotelesDAOImpl ho = new hotelesDAOImpl();){
+            al = re.getReservas(nombre, fechaNac);
+
+        }catch (Exception e){
+            throw e;
+        }
+        return al;
+    }
+    public void updateReserva (Reserva reser, int nuevaHab, String nuevaFentrada, String nuevaFsalida) throws Exception{
+     try (ReservaDAOImpl re = new ReservaDAOImpl();){
+         re.updateReserva(reser, nuevaHab, nuevaFentrada, nuevaFsalida);
+     }catch (Exception e){
+         throw e;
+     }
+    }
+    public void deleteReserva (Reserva reser) throws Exception {
+        try (ReservaDAOImpl re = new ReservaDAOImpl();){
+            re.deleteReserva(reser);
+        }catch (Exception e){
+            throw e;
+        }
+    }
+    public void addPassword(int cliente_id, String textPass) throws Exception{
+        try (passwordDAOImpl pass = new passwordDAOImpl();){
+            pass.addPassword(cliente_id,textPass);
+        }catch (Exception e){
+            throw e;
+        }
+    }
+    public String getPassword (int id_cliente) throws Exception{
+        String password = null;
+        try (passwordDAOImpl pass = new passwordDAOImpl();){
+            password = pass.getPasswordByCliente(id_cliente);
+        }catch (Exception e){
+            throw e;
+        }
+        return password;
+    }
 }

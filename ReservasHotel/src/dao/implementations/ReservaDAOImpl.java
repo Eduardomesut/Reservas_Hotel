@@ -129,6 +129,45 @@ public class ReservaDAOImpl implements ReservaDAO, AutoCloseable {
     }
 
     @Override
+    public ArrayList<Reserva> getReservas(String nombre, String fechaNac) throws Exception {
+        ArrayList<Reserva> al = new ArrayList<>();
+        Reserva r = null;
+        ResultSet rs = null;
+        String sql = "SELECT r.reserva_id, r.cliente_id, r.habitacion_id, r.fecha_ingreso, r.fecha_salida FROM reservas AS r JOIN clientes AS c ON r.cliente_id = c.id WHERE c.nombre = ? AND fechaNac = ?;";
+        try (PreparedStatement pst = con.prepareStatement(sql);){
+            pst.setString(1,nombre);
+            pst.setString(2,fechaNac);
+            rs = pst.executeQuery();
+            while (rs.next()){
+                r = new Reserva(rs.getInt("reserva_id"), rs.getInt("cliente_id"), rs.getInt("habitacion_id"), rs.getString("fecha_ingreso"), rs.getString("fecha_salida"));
+                al.add(r);
+            }
+        }catch (Exception e){
+            throw e;
+        }finally {
+            if (rs != null){
+                rs.close();
+            }
+        }
+        return al;
+    }
+
+    @Override
+    public int deleteReserva(Reserva reser) throws Exception {
+        int c = 0;
+        int id_reserva = reser.getReserva_id();
+        String sql = "DELETE FROM reservas WHERE reserva_id = ?";
+        try (PreparedStatement pst = con.prepareStatement(sql);){
+            pst.setInt(1,id_reserva);
+            pst.executeUpdate();
+        }catch (Exception e){
+            throw e;
+        }
+
+        return c;
+    }
+
+    @Override
     public void close() throws Exception {
         con.close();
     }

@@ -8,7 +8,7 @@ public class MainPanel extends JPanel {
 
     public MainPanel(HotelGUI frame) {
         this.frame = frame;
-        setLayout(new GridLayout(3, 1, 10, 10));
+        setLayout(new GridLayout(4, 1, 10, 10));
 
         JButton btnRegister = new JButton("Registrarse");
         btnRegister.addActionListener(e -> frame.showCard("Register"));
@@ -17,6 +17,16 @@ public class MainPanel extends JPanel {
         JButton btnLogin = new JButton("Iniciar Sesión");
         btnLogin.addActionListener(e -> frame.showCard("Login"));
         add(btnLogin);
+
+        JButton btnAdmin = new JButton("Modo Administrador");
+        btnAdmin.addActionListener(e -> {
+            try {
+                frame.switchToAdminMenu();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        add(btnAdmin);
 
         JButton btnExit = new JButton("Salir");
         btnExit.addActionListener(e -> System.exit(0));
