@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public interface clientesDAO {
 
-    public ArrayList<clientes> getClientes(String nombre) throws Exception;
+    public ArrayList<clientes> getClientes(String nombre, String nacimiento) throws Exception;
     public clientes getClienteByReserva(int reserva_id) throws Exception;
     public int updateCliente(String fecha_entrada, String fecha_salida, int reserva_id) throws Exception;
     public int addCliente(String nombre, String fechaNac)throws Exception;

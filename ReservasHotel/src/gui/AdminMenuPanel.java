@@ -49,7 +49,9 @@ public class AdminMenuPanel extends JPanel {
     private void listarClientes() throws Exception {
         ArrayList<clientes>al = new ArrayList<>();
         String nombre = JOptionPane.showInputDialog(this, "Nombre a buscar:");
-        al = ph.getClientes(nombre);
+        String nacimiento = JOptionPane.showInputDialog(this, "Año de nacimiento:");
+
+        al = ph.getClientes(nombre, nacimiento);
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(0, 1)); // Un botón por fila
         String message = "Clientes:\n";
