@@ -88,6 +88,33 @@ public class habitacionesDAOImpl implements habitacionesDAO, AutoCloseable{
     }
 
     @Override
+    public boolean habitacionOcupada(int idHab, String fechaE, String fechaS) throws Exception {
+        int reservada = 0;
+        ResultSet rs = null;
+        String sql = "SELECT COUNT(*) AS numero FROM reservas WHERE habitacion_id = ? AND (fecha_ingreso <= ? AND fecha_salida >= ?);";
+        try (PreparedStatement pst = con.prepareStatement(sql);){
+            pst.setInt(1,idHab);
+            pst.setString(2, fechaS);
+            pst.setString(3, fechaE);
+            rs = pst.executeQuery();
+            while (rs.next()){
+                reservada += rs.getInt("numero");
+            }
+        }catch (Exception e){
+            throw e;
+        }finally {
+            if (rs != null){
+                rs.close();
+            }
+        }
+        if (reservada > 0){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    @Override
     public void close() throws Exception {
         con.close();
     }
