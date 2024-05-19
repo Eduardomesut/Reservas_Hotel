@@ -18,17 +18,24 @@ public class ProgramaHotel {
     public int addReserva (Reserva h)throws  Exception {
         int r = 0;
         try (ReservaDAOImpl re = new ReservaDAOImpl(); clientesDAOImpl cl = new clientesDAOImpl(); habitacionesDAOImpl ha = new habitacionesDAOImpl();){
-            //Hacer si hay o no hab
-            if (ha.habitacionOcupada(h.getHabitacion_id(), h.getFecha_ingreso(), h.getFecha_salida())){
-                throw new Exception("Habitacion ya reservada para esta fecha");
-            }else {
                 re.addReserva(h.getCliente_id(), h.getHabitacion_id(),h.getFecha_ingreso(),h.getFecha_salida());
                 cl.updateCliente(h.getFecha_ingreso(),h.getFecha_salida(),re.getReservaId(h.getCliente_id(),h.getFecha_ingreso()));
-            }
+
         }catch (Exception e){
             throw e;
         }
         return r;
+    }
+    public boolean habitacionOcupada (int hab_id, String fechaE, String fechaS) throws Exception{
+        try (habitacionesDAOImpl ha = new habitacionesDAOImpl();){
+            if (ha.habitacionOcupada(hab_id, fechaE, fechaS)){
+                return true;
+            }else {
+                return false;
+            }
+        }catch (Exception e){
+            throw e;
+        }
     }
     public int addCliente (clientes h) throws Exception{
         int r = 0;
@@ -196,5 +203,14 @@ public class ProgramaHotel {
             throw e;
         }
         return password;
+    }
+    public int registrarHotel (String nombre, String ubicacion) throws Exception{
+        int r = 0;
+        try (hotelesDAOImpl ho = new hotelesDAOImpl();){
+            ho.registrarHotel(nombre, ubicacion);
+        }catch (Exception e){
+            throw e;
+        }
+        return r;
     }
 }

@@ -41,6 +41,15 @@ public class AdminMenuPanel extends JPanel {
         });
         add(listarClientes);
 
+        JButton registrarHotel = new JButton("Registrar nuevo hotel");
+        registrarHotel.addActionListener(e -> {
+            try {
+                registrarHotel();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        add(registrarHotel);
 
         JButton backButton = new JButton("Salir");
         backButton.addActionListener(e -> frame.showCard("Main"));
@@ -71,6 +80,18 @@ public class AdminMenuPanel extends JPanel {
         }
         JScrollPane scrollPane = new JScrollPane(panel);
         JOptionPane.showMessageDialog(null, scrollPane, "Selecciona un cliente", JOptionPane.PLAIN_MESSAGE);
+
+    }
+    private void registrarHotel () throws Exception{
+        String nombre = JOptionPane.showInputDialog(this, "Nombre del hotel:");
+        String ubicacion = JOptionPane.showInputDialog(this, "Ubicación del hotel:");
+        this.ph.registrarHotel(nombre, ubicacion);
+        JOptionPane.showMessageDialog(this, "Hotel " + nombre + " registrado correctamente!");
+        //Hacer opcion para mirar en cada hotel lod detalles de las habitaciones y poder eliminar hoteles y acceder a sus
+        // habitaciones y editar y eliminar estas
+
+
+
 
     }
     private void showReservasClientes (String nombre, String fechaNac) throws Exception{

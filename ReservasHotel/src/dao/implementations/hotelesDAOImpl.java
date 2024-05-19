@@ -104,6 +104,20 @@ public class hotelesDAOImpl implements hotelesDAO, AutoCloseable {
     }
 
     @Override
+    public int registrarHotel(String nombre, String ubicacion) throws Exception {
+        int r = 0;
+        String sql = "INSERT INTO hoteles (nombre, ubicacion) VALUES (?, ?);";
+        try (PreparedStatement pst = con.prepareStatement(sql);){
+            pst.setString(1, nombre);
+            pst.setString(2, ubicacion);
+            r = pst.executeUpdate();
+        }catch (Exception e){
+            throw e;
+        }
+        return r;
+    }
+
+    @Override
     public void close() throws Exception {
         con.close();
     }

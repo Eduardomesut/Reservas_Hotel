@@ -173,22 +173,25 @@ import java.util.Properties;
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             String checkIn = format.format(checkInDate);
             String checkOut = format.format(checkOutDate);
-
-            precio = ph.getPrecioByHabyFecha(Integer.parseInt(id_habitacion), checkIn, checkOut);
-            JOptionPane pago = new JOptionPane();
-            int respuesta = pago.showConfirmDialog(this, "Precio: " + precio + " Euros", "Confirmación de reserva", JOptionPane.YES_NO_OPTION);
-            if (respuesta == JOptionPane.YES_OPTION) {
-                try {
-                    Reserva newReservation = new Reserva(userID, Integer.parseInt(id_habitacion), checkIn, checkOut);
-                    ph.addReserva(newReservation);
-                    JOptionPane.showMessageDialog(this, "Reserva realizada con éxito!");
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(this, "Error al hacer la reserva: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            if (this.ph.habitacionOcupada(Integer.parseInt(id_habitacion), checkIn, checkOut)){
+                JOptionPane.showMessageDialog(this, "Lo sentimos, no hay habitación para estas fechas...");
+            }else {
+                precio = ph.getPrecioByHabyFecha(Integer.parseInt(id_habitacion), checkIn, checkOut);
+                JOptionPane pago = new JOptionPane();
+                int respuesta = pago.showConfirmDialog(this, "Precio: " + precio + " Euros", "Confirmación de reserva", JOptionPane.YES_NO_OPTION);
+                if (respuesta == JOptionPane.YES_OPTION) {
+                    try {
+                        Reserva newReservation = new Reserva(userID, Integer.parseInt(id_habitacion), checkIn, checkOut);
+                        ph.addReserva(newReservation);
+                        JOptionPane.showMessageDialog(this, "Reserva realizada con éxito!");
+                    } catch (Exception e) {
+                        JOptionPane.showMessageDialog(this, "Error al hacer la reserva: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } else if (respuesta == JOptionPane.NO_OPTION) {
+                    JOptionPane.showMessageDialog(this, "Reserva cancelada");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Saliendo");
                 }
-            } else if (respuesta == JOptionPane.NO_OPTION) {
-                JOptionPane.showMessageDialog(this, "Reserva cancelada");
-            } else {
-                JOptionPane.showMessageDialog(this, "Saliendo");
             }
         }
 
