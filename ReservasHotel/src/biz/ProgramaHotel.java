@@ -107,6 +107,17 @@ public class ProgramaHotel {
 
         return nombre;
     }
+    public void meterHabitacion (int hotel_id, String numero, String tipo, double precio_alto, double precio_medio, double precio_bajo) throws Exception{
+        int habitacion_id = 0;
+        int hotel;
+        try (habitacionesDAOImpl hab = new habitacionesDAOImpl(); preciosDAOImpl pre = new preciosDAOImpl();){
+            hotel = hab.addHabitacion(hotel_id, numero, tipo);
+            habitacion_id = hab.getIdHab(hotel_id, numero, tipo);
+            pre.addprecios(precio_alto, precio_medio, precio_bajo, habitacion_id);
+        }catch (Exception e){
+            throw e;
+        }
+    }
     public Reserva reservaDeUsuario (int id_usuario)throws Exception{
         Reserva nueva = null;
         try (ReservaDAOImpl r = new ReservaDAOImpl();){

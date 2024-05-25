@@ -51,6 +51,18 @@ public class AdminMenuPanel extends JPanel {
         });
         add(registrarHotel);
 
+        JButton addHabitacion = new JButton("Añadir nueva habitación");
+        addHabitacion.addActionListener(e -> {
+            try {
+                meterHabitacion();
+
+            }catch (Exception ex){
+                throw new RuntimeException(ex);
+            }
+
+        });
+        add(addHabitacion);
+
         JButton backButton = new JButton("Salir");
         backButton.addActionListener(e -> frame.showCard("Main"));
         add(backButton);
@@ -87,6 +99,9 @@ public class AdminMenuPanel extends JPanel {
         String ubicacion = JOptionPane.showInputDialog(this, "Ubicación del hotel:");
         this.ph.registrarHotel(nombre, ubicacion);
         JOptionPane.showMessageDialog(this, "Hotel " + nombre + " registrado correctamente!");
+
+
+
         //Hacer opcion para mirar en cada hotel lod detalles de las habitaciones y poder eliminar hoteles y acceder a sus
         // habitaciones y editar y eliminar estas
 
@@ -163,6 +178,40 @@ public class AdminMenuPanel extends JPanel {
                 JOptionPane.showMessageDialog(this, "Reserva cambiada correctamente");
             }
         }
+    }
+    private void meterHabitacion ()throws Exception{
+        ArrayList<hoteles> hotels = ph.getHoteles();
+
+        // Crear un panel para los botones
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(0, 1)); // Un botón por fila
+
+        // Crear un botón para cada hotel y agregarlo al panel
+        for (hoteles hotel : hotels) {
+            JButton button = new JButton(hotel.getNombre() + " - " + hotel.getUbicacion());
+            button.addActionListener(e -> {
+                String numero = JOptionPane.showInputDialog(this, "Número de habitación:");
+                String tipo = JOptionPane.showInputDialog(this, "Tipo de la habitación:");
+                double precio_alto = Double.parseDouble(JOptionPane.showInputDialog(this, "Precio en la temporada alta"));
+                double precio_medio = Double.parseDouble(JOptionPane.showInputDialog(this, "Precio en la temporada media"));
+                double precio_bajo = Double.parseDouble(JOptionPane.showInputDialog(this, "Precio en la temporada baja"));
+                try {
+                    this.ph.meterHabitacion(hotel.getHotel_id(), numero, tipo, precio_alto, precio_medio,precio_bajo);
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+                JOptionPane.showMessageDialog(this, "Habitación " + numero + " añadida correctamente!");
+            });
+            panel.add(button);
+        }
+
+        // Crear y mostrar el diálogo con los botones
+        JDialog dialog = new JDialog((Frame) null, "Seleccione un hotel", false);
+        dialog.getContentPane().add(new JScrollPane(panel));
+        dialog.setSize(300, 400);
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
+
     }
     // Clase para formatear la fecha
     public class DateLabelFormatter extends JFormattedTextField.AbstractFormatter {

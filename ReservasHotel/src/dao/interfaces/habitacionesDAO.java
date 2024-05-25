@@ -14,6 +14,8 @@ public interface habitacionesDAO {
     public boolean habitacionOcupada(int idHab, String fechaE, String fechaS) throws Exception;
     //habitacion ocupada boolean
 
+    public int addHabitacion(int hotel_id, String numero, String tipo) throws Exception;
 
+    public int getIdHab(int hotel_id, String numero, String tipo)throws Exception;
 
 }
