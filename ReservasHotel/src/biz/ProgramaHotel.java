@@ -6,6 +6,7 @@ import dao.implementations.hotelesDAOImpl;
 import dao.implementations.habitacionesDAOImpl;
 import dao.implementations.preciosDAOImpl;
 import dao.implementations.passwordDAOImpl;
+import dao.implementations.datosUsuarioDAOImpl;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -39,12 +40,32 @@ public class ProgramaHotel {
     }
     public int addCliente (clientes h) throws Exception{
         int r = 0;
-        try (clientesDAOImpl c = new clientesDAOImpl();){
+        try (clientesDAOImpl c = new clientesDAOImpl(); datosUsuarioDAOImpl d = new datosUsuarioDAOImpl();){
             r = c.addCliente(h.getNombre(),h.getFechaNac());
+            d.insertDatos(c.getClienteId(h.getNombre(),h.getFechaNac()), 0,0);
         }catch (Exception e){
             throw e;
         }
         return r;
+    }
+    public int puntosNH (int id_cliente) throws Exception{
+        int puntos = 0;
+        try (datosUsuarioDAOImpl da = new datosUsuarioDAOImpl();){
+            puntos = da.getDatosUser(id_cliente).getPuntosNH();
+        }catch (Exception e){
+            throw  e;
+        }
+        return puntos;
+    }
+    public double saldo (int id_cliente) throws Exception{
+        double saldo = 0;
+        try (datosUsuarioDAOImpl da = new datosUsuarioDAOImpl();){
+            saldo = da.getDatosUser(id_cliente).getSaldo();
+
+        }catch (Exception e){
+            throw e;
+        }
+        return saldo;
     }
 
     //Usos de prueba

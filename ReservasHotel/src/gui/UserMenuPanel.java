@@ -28,10 +28,14 @@ import java.util.Properties;
             this.frame = frame;
             this.ph = ph;
             this.userID = userID;
-            setLayout(new GridLayout(5, 1, 10, 10));
+            int puntos = ph.puntosNH(userID);
+            double saldo = ph.saldo(userID);
+
+            setLayout(new GridLayout(6, 1, 10, 10));
 
             String userName = ph.nombre(userID);
-            add(new JLabel("Bienvenido al menú " + userName));
+            add(new JLabel("Bienvenido al menú " + userName + "                         " +
+                    "                  Puntos NH: " + puntos + "pts" +"   Saldo: " + saldo + "€"));
 
             JButton searchRoomsButton = new JButton("Buscar habitaciones");
             searchRoomsButton.addActionListener(e -> {
@@ -63,6 +67,16 @@ import java.util.Properties;
                 }
             });
             add(viewReservationsButton);
+
+            JButton datosUsuario = new JButton("Datos Usuario");
+            viewReservationsButton.addActionListener(e -> {
+                try {
+                    dataUser();
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+            });
+            add(datosUsuario);
 
             JButton backButton = new JButton("Salir");
             backButton.addActionListener(e -> frame.showCard("Main"));
@@ -143,6 +157,11 @@ import java.util.Properties;
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
+        }
+
+        private void dataUser () throws Exception{
+            // Hacer método y base de datos de datos de los datos de la cuenta como el sueldo de NH
+
         }
 
         private void makeReservation(String id_habitacion) throws Exception {
