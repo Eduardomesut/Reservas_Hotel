@@ -23,6 +23,8 @@ import java.util.Properties;
         private HotelGUI frame;
         private ProgramaHotel ph;
         private int userID;
+        private JLabel welcomeLabel;
+
 
         public UserMenuPanel(HotelGUI frame, ProgramaHotel ph, int userID) throws Exception {
             this.frame = frame;
@@ -34,8 +36,9 @@ import java.util.Properties;
             setLayout(new GridLayout(6, 1, 10, 10));
 
             String userName = ph.nombre(userID);
-            add(new JLabel("Bienvenido al menú " + userName + "                         " +
-                    "                  Puntos NH: " + puntos + "pts" +"   Saldo: " + saldo + "€"));
+            welcomeLabel = new JLabel("Bienvenido al menú " + userName + "                         " +
+                    "                  Puntos NH: " + puntos + "pts" + "   Saldo: " + saldo + "€");
+            add(welcomeLabel);
 
             JButton searchRoomsButton = new JButton("Buscar habitaciones");
             searchRoomsButton.addActionListener(e -> {
@@ -69,7 +72,7 @@ import java.util.Properties;
             add(viewReservationsButton);
 
             JButton datosUsuario = new JButton("Datos Usuario");
-            viewReservationsButton.addActionListener(e -> {
+            datosUsuario.addActionListener(e -> {
                 try {
                     dataUser();
                 } catch (Exception ex) {
@@ -161,7 +164,19 @@ import java.util.Properties;
 
         private void dataUser () throws Exception{
             // Hacer método y base de datos de datos de los datos de la cuenta como el sueldo de NH
+            JPanel panel = new JPanel();
+            panel.setLayout(new GridLayout(0, 1)); // Un botón por fila
+            JButton dinero = new JButton("Añadir dinero al saldo");
+            dinero.addActionListener(e -> {
+                Double dineroAdd = Double.parseDouble(JOptionPane.showInputDialog("Dinero a introducir: "));
+            });
+            panel.add(dinero);
 
+            JDialog dialog = new JDialog((Frame) null, "Seleccione un hotel", false);
+            dialog.getContentPane().add(new JScrollPane(panel));
+            dialog.setSize(300, 400);
+            dialog.setLocationRelativeTo(null);
+            dialog.setVisible(true);
         }
 
         private void makeReservation(String id_habitacion) throws Exception {
@@ -203,6 +218,12 @@ import java.util.Properties;
                         Reserva newReservation = new Reserva(userID, Integer.parseInt(id_habitacion), checkIn, checkOut);
                         ph.addReserva(newReservation);
                         JOptionPane.showMessageDialog(this, "Reserva realizada con éxito!");
+                        ph.addPuntosNH(this.userID, (int)(ph.puntosNH(this.userID) + precio * 10));
+                        ph.addSaldo(this.userID, ph.saldo(this.userID) - precio);
+                        JOptionPane.showMessageDialog(this, "Enhorabuena como cliente te llevas " + ((int)precio * 10) + " puntos NH!");
+                        //Meter 10 puntos NH por cada euros gastado en la reserva
+                        updateWelcomeLabel();
+
                     } catch (Exception e) {
                         JOptionPane.showMessageDialog(this, "Error al hacer la reserva: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
@@ -237,5 +258,12 @@ import java.util.Properties;
                 }
                 return "";
             }
+        }
+        private void updateWelcomeLabel() throws Exception {
+            int puntos = ph.puntosNH(userID);
+            double saldo = ph.saldo(userID);
+            String userName = ph.nombre(userID);
+            welcomeLabel.setText("Bienvenido al menú " + userName + "                         " +
+                    "                  Puntos NH: " + puntos + "pts" + "   Saldo: " + saldo + "€");
         }
     }

@@ -63,13 +63,31 @@ public class datosUsuarioDAOImpl implements datosUsuarioDAO, AutoCloseable{
     }
 
     @Override
-    public int updateSaldo(int cliente_id, double saldo) {
-        return 0;
+    public int updateSaldo(int cliente_id, double saldo)throws Exception {
+        int r = 0;
+        String sql = "UPDATE datos_usuario SET saldo = ? WHERE id_usuario = ?;";
+        try(PreparedStatement pst = con.prepareStatement(sql);){
+            pst.setDouble(1, saldo);
+            pst.setInt(2, cliente_id);
+            r = pst.executeUpdate();
+        }catch (Exception e){
+            throw e;
+        }
+        return r;
     }
 
     @Override
-    public int updatePuntos(int cliente_id, int puntos) {
-        return 0;
+    public int updatePuntos(int cliente_id, int puntos) throws Exception{
+        int r = 0;
+        String sql = "UPDATE datos_usuario SET puntosNH = ? WHERE id_usuario = ?;";
+        try(PreparedStatement pst = con.prepareStatement(sql);){
+            pst.setInt(1, puntos);
+            pst.setInt(2, cliente_id);
+            r = pst.executeUpdate();
+        }catch (Exception e){
+            throw e;
+        }
+        return r;
     }
 
     @Override

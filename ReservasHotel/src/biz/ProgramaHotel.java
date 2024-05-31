@@ -245,4 +245,22 @@ public class ProgramaHotel {
         }
         return r;
     }
+    public int addPuntosNH (int id_cliente, int puntos) throws Exception{
+        int r = 0;
+        try (datosUsuarioDAOImpl dat = new datosUsuarioDAOImpl();){
+            r = dat.updatePuntos(id_cliente, puntos);
+        }catch (Exception e){
+            throw e;
+        }
+        return r;
+    }
+    public int addSaldo (int id_cliente, double saldo) throws Exception{
+        int r = 0;
+        try (datosUsuarioDAOImpl dat = new datosUsuarioDAOImpl();){
+            r = dat.updateSaldo(id_cliente, saldo);
+        }catch (Exception e){
+            throw e;
+        }
+        return r;
+    }
 }

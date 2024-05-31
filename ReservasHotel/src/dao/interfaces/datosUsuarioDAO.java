@@ -8,6 +8,6 @@ public interface datosUsuarioDAO {
 
     public datosUsuario getDatosUser(int cliente_id) throws Exception;
 
-    public int updateSaldo(int cliente_id, double saldo);
-    public int updatePuntos(int cliente_id, int puntos);
+    public int updateSaldo(int cliente_id, double saldo) throws Exception;
+    public int updatePuntos(int cliente_id, int puntos) throws Exception;
 }
