@@ -1,12 +1,6 @@
 package biz;
 
-import dao.implementations.ReservaDAOImpl;
-import dao.implementations.clientesDAOImpl;
-import dao.implementations.hotelesDAOImpl;
-import dao.implementations.habitacionesDAOImpl;
-import dao.implementations.preciosDAOImpl;
-import dao.implementations.passwordDAOImpl;
-import dao.implementations.datosUsuarioDAOImpl;
+import dao.implementations.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -262,5 +256,16 @@ public class ProgramaHotel {
             throw e;
         }
         return r;
+    }
+
+    public ArrayList<premios>listadoPremios() throws Exception{
+        ArrayList<premios>al = new ArrayList<>();
+        try (premiosDAOImpl prem = new premiosDAOImpl();){
+            al = prem.listaPremios();
+
+        }catch (Exception e){
+            throw e;
+        }
+        return al;
     }
 }

@@ -1,9 +1,6 @@
 package gui;
 
-import biz.ProgramaHotel;
-import biz.Reserva;
-import biz.habitaciones;
-import biz.hoteles;
+import biz.*;
 import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
@@ -169,10 +166,31 @@ import java.util.Properties;
             JButton dinero = new JButton("Añadir dinero al saldo");
             dinero.addActionListener(e -> {
                 Double dineroAdd = Double.parseDouble(JOptionPane.showInputDialog("Dinero a introducir: "));
+                try {
+                    ph.addSaldo(this.userID, ph.saldo(this.userID) + dineroAdd);
+                    updateWelcomeLabel();
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
             });
             panel.add(dinero);
 
-            JDialog dialog = new JDialog((Frame) null, "Seleccione un hotel", false);
+            JButton puntos = new JButton("Canjear tus puntos NH");
+            puntos.addActionListener(e -> {
+                //premios a canjear
+                //Recorrer con botones toda la lista de premios
+
+                try {
+                    listarPremios();
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+
+            });
+            panel.add(puntos);
+
+
+            JDialog dialog = new JDialog((Frame) null, "Seleccione una opción", false);
             dialog.getContentPane().add(new JScrollPane(panel));
             dialog.setSize(300, 400);
             dialog.setLocationRelativeTo(null);
@@ -215,15 +233,18 @@ import java.util.Properties;
                 int respuesta = pago.showConfirmDialog(this, "Precio: " + precio + " Euros", "Confirmación de reserva", JOptionPane.YES_NO_OPTION);
                 if (respuesta == JOptionPane.YES_OPTION) {
                     try {
-                        Reserva newReservation = new Reserva(userID, Integer.parseInt(id_habitacion), checkIn, checkOut);
-                        ph.addReserva(newReservation);
-                        JOptionPane.showMessageDialog(this, "Reserva realizada con éxito!");
-                        ph.addPuntosNH(this.userID, (int)(ph.puntosNH(this.userID) + precio * 10));
-                        ph.addSaldo(this.userID, ph.saldo(this.userID) - precio);
-                        JOptionPane.showMessageDialog(this, "Enhorabuena como cliente te llevas " + ((int)precio * 10) + " puntos NH!");
-                        //Meter 10 puntos NH por cada euros gastado en la reserva
-                        updateWelcomeLabel();
-
+                        if (ph.saldo(this.userID) - precio >= 0){
+                            Reserva newReservation = new Reserva(userID, Integer.parseInt(id_habitacion), checkIn, checkOut);
+                            ph.addReserva(newReservation);
+                            JOptionPane.showMessageDialog(this, "Reserva realizada con éxito!");
+                            ph.addPuntosNH(this.userID, (int)(ph.puntosNH(this.userID) + precio * 10));
+                            ph.addSaldo(this.userID, ph.saldo(this.userID) - precio);
+                            JOptionPane.showMessageDialog(this, "Enhorabuena como cliente te llevas " + ((int)precio * 10) + " puntos NH!");
+                            //Meter 10 puntos NH por cada euros gastado en la reserva
+                            updateWelcomeLabel();
+                        }else{
+                            JOptionPane.showMessageDialog(this, "Reserva cancelada, no dispone de saldo suficiente");
+                        }
                     } catch (Exception e) {
                         JOptionPane.showMessageDialog(this, "Error al hacer la reserva: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
@@ -239,6 +260,40 @@ import java.util.Properties;
             // Implementación para mostrar reservas
             String message = "Tus reservas:\n" + ph.getReservas(userID);
             JOptionPane.showMessageDialog(this, message);
+        }
+        private void listarPremios () throws Exception{
+            ArrayList<premios> al = new ArrayList<>();
+            al = this.ph.listadoPremios();
+            JPanel panel = new JPanel();
+            panel.setLayout(new GridLayout(0, 1)); // Un botón por fila
+            String message = "Premios:\n";
+            for (premios premio:al) {
+                JButton button = new JButton(premio.getNombre() + " - " + premio.getCoste() + " puntos");
+                button.addActionListener(e ->  {
+
+                    int respuesta = JOptionPane.showConfirmDialog(this, premio.getDescripcion(), "Confirmación de canjeo", JOptionPane.YES_NO_OPTION);
+                    if (respuesta == JOptionPane.YES_OPTION){
+                        try {
+                            if (this.ph.puntosNH(this.userID) - premio.getCoste() >= 0){
+                                this.ph.addPuntosNH(this.userID,this.ph.puntosNH(this.userID) - premio.getCoste());
+                                updateWelcomeLabel();
+                            }else {
+                                JOptionPane.showMessageDialog(this, "No tienes puntos suficientes");
+                            }
+
+                        } catch (Exception ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    } else if (respuesta == JOptionPane.NO_OPTION) {
+                        JOptionPane.showMessageDialog(this, "Premio no recibido");
+                    }else{
+                        JOptionPane.showMessageDialog(this, "Saliendo");
+                    }
+                });
+                panel.add(button);
+            }
+            JScrollPane scrollPane = new JScrollPane(panel);
+            JOptionPane.showMessageDialog(null, scrollPane, "Selecciona un premio a canjear", JOptionPane.PLAIN_MESSAGE);
         }
 
         public static class DateLabelFormatter extends JFormattedTextField.AbstractFormatter {
