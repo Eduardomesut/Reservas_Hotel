@@ -22,6 +22,7 @@ import java.util.Properties;
         private ProgramaHotel ph;
         private int userID;
         private JLabel welcomeLabel;
+        private JLabel textoPuntos;
 
 
         public UserMenuPanel(HotelGUI frame, ProgramaHotel ph, int userID) throws Exception {
@@ -47,17 +48,6 @@ import java.util.Properties;
                 }
             });
             add(searchRoomsButton);
-
-            JButton makeReservationButton = new JButton("Hacer una reserva");
-            makeReservationButton.addActionListener(e -> {
-                try {
-                    String roomID = JOptionPane.showInputDialog(this, "Ingrese ID de habitación:");
-                    makeReservation(roomID);
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
-            });
-            add(makeReservationButton);
 
             JButton viewReservationsButton = new JButton("Ver tus reservas");
             viewReservationsButton.addActionListener(e -> {
@@ -147,7 +137,7 @@ import java.util.Properties;
                     String habitacion = hab.getId_hab() + "";
                     button.addActionListener(e -> {
                         try {
-                            makeReservation(habitacion);
+                            makeReservation(habitacion, frame);
                         } catch (Exception ex) {
                             throw new RuntimeException(ex);
                         }
@@ -165,6 +155,8 @@ import java.util.Properties;
         private void dataUser () throws Exception{
             // Hacer método y base de datos de datos de los datos de la cuenta como el sueldo de NH
             JPanel panel = new JPanel();
+            textoPuntos = new JLabel("Puntos NH disponibles: " + this.ph.puntosNH(this.userID));
+            panel.add(textoPuntos);
             panel.setLayout(new GridLayout(0, 1)); // Un botón por fila
             JButton dinero = new JButton("Añadir dinero al saldo");
             dinero.addActionListener(e -> {
@@ -172,6 +164,8 @@ import java.util.Properties;
                 try {
                     ph.addSaldo(this.userID, ph.saldo(this.userID) + dineroAdd);
                     updateWelcomeLabel();
+
+
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }
@@ -200,7 +194,7 @@ import java.util.Properties;
             dialog.setVisible(true);
         }
 
-        private void makeReservation(String id_habitacion) throws Exception {
+        private void makeReservation(String id_habitacion, JFrame frame) throws Exception {
             double precio = 0;
 
             // Configuración común para las propiedades de los date pickers
@@ -243,6 +237,11 @@ import java.util.Properties;
                             ph.addPuntosNH(this.userID, (int)(ph.puntosNH(this.userID) + precio * 10));
                             ph.addSaldo(this.userID, ph.saldo(this.userID) - precio);
                             JOptionPane.showMessageDialog(this, "Enhorabuena como cliente te llevas " + ((int)precio * 10) + " puntos NH!");
+                            frame.dispose();
+
+
+
+
                             //Meter 10 puntos NH por cada euros gastado en la reserva
                             updateWelcomeLabel();
                         }else{
@@ -275,6 +274,7 @@ import java.util.Properties;
             JPanel panel = new JPanel();
             panel.setLayout(new GridLayout(0, 1)); // Un botón por fila
             String message = "Premios:\n";
+            JDialog dialog = new JDialog(frame, "Selecciona un premio a canjear", true);
             for (premios premio : al) {
                 JButton button = new JButton(premio.getNombre() + " - " + premio.getCoste() + " puntos");
                 button.addActionListener(e -> {
@@ -312,6 +312,8 @@ import java.util.Properties;
                             if (this.ph.puntosNH(this.userID) - premio.getCoste() >= 0) {
                                 this.ph.addPuntosNH(this.userID, this.ph.puntosNH(this.userID) - premio.getCoste());
                                 updateWelcomeLabel();
+                                updatetextoPuntos();
+                                dialog.dispose();
                             } else {
                                 JOptionPane.showMessageDialog(this, "No tienes puntos suficientes");
                             }
@@ -327,7 +329,10 @@ import java.util.Properties;
                 panel.add(button);
             }
             JScrollPane scrollPane = new JScrollPane(panel);
-            JOptionPane.showMessageDialog(null, scrollPane, "Selecciona un premio a canjear", JOptionPane.PLAIN_MESSAGE);
+            dialog.add(scrollPane);
+            dialog.setSize(400, 300);
+            dialog.setLocationRelativeTo(frame);
+            dialog.setVisible(true);
 
         }
 
@@ -355,6 +360,10 @@ import java.util.Properties;
             String userName = ph.nombre(userID);
             welcomeLabel.setText("Bienvenido al menú " + userName + "                         " +
                     "                  Puntos NH: " + puntos + "pts" + "   Saldo: " + saldo + "€");
+        }
+
+        private void updatetextoPuntos()throws Exception {
+            textoPuntos.setText("Puntos NH disponibles: " + this.ph.puntosNH(this.userID));
         }
         public ImageIcon scaleImage(ImageIcon icon, int w, int h)
         {
