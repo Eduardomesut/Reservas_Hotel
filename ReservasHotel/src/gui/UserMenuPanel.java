@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -129,6 +130,8 @@ import java.util.Properties;
                 }else {
                     imageIcon = new ImageIcon("./img/hotel.jpg");
                 }
+
+                imageIcon = scaleImage(imageIcon, 400,400);
                 JLabel label = new JLabel(imageIcon);
                 frame.add(label, BorderLayout.CENTER);
 
@@ -264,29 +267,60 @@ import java.util.Properties;
         private void listarPremios () throws Exception{
             ArrayList<premios> al = new ArrayList<>();
             al = this.ph.listadoPremios();
+            ImageIcon imageIcon = null;
+
+// Cargamos la imagen de fondo.
+            JLabel label = new JLabel(imageIcon);
+            frame.add(label, BorderLayout.CENTER);
             JPanel panel = new JPanel();
             panel.setLayout(new GridLayout(0, 1)); // Un botón por fila
             String message = "Premios:\n";
-            for (premios premio:al) {
+            for (premios premio : al) {
                 JButton button = new JButton(premio.getNombre() + " - " + premio.getCoste() + " puntos");
-                button.addActionListener(e ->  {
+                button.addActionListener(e -> {
+                    ImageIcon foto = null;
+                    // Cargar la imagen del premio
+                    if (premio.getPremioId() == 1){
+                        foto = new ImageIcon("./img/tele.jpg");
+                    } else if (premio.getPremioId() == 2) {
+                        foto = new ImageIcon("./img/teclado.jpg");
+                    } else if (premio.getPremioId() == 3) {
+                        foto = new ImageIcon("./img/bici.jpg");
+                    } else if (premio.getPremioId() == 4) {
+                        foto = new ImageIcon("./img/smarthphone.jpg");
+                    } else if (premio.getPremioId() == 5) {
+                        foto = new ImageIcon("./img/angeles.jpg");
 
-                    int respuesta = JOptionPane.showConfirmDialog(this, premio.getDescripcion(), "Confirmación de canjeo", JOptionPane.YES_NO_OPTION);
-                    if (respuesta == JOptionPane.YES_OPTION){
+                    }else {
+                        foto = new ImageIcon("./img/premio.jpg");
+                    }
+                    foto = scaleImage(foto,50,50);
+
+                    JLabel fotoLabel = new JLabel(foto);
+                    JLabel descripcionLabel = new JLabel("<html><p>" + premio.getDescripcion() + "</p></html>");
+
+                    // Crear el panel de confirmación
+                    JPanel confirmacionPanel = new JPanel();
+                    confirmacionPanel.setLayout(new BorderLayout());
+                    confirmacionPanel.add(fotoLabel, BorderLayout.NORTH);
+                    confirmacionPanel.add(descripcionLabel, BorderLayout.CENTER);
+
+                    int respuesta = JOptionPane.showConfirmDialog(this, confirmacionPanel, "Confirmación de canjeo", JOptionPane.YES_NO_OPTION);
+
+                    if (respuesta == JOptionPane.YES_OPTION) {
                         try {
-                            if (this.ph.puntosNH(this.userID) - premio.getCoste() >= 0){
-                                this.ph.addPuntosNH(this.userID,this.ph.puntosNH(this.userID) - premio.getCoste());
+                            if (this.ph.puntosNH(this.userID) - premio.getCoste() >= 0) {
+                                this.ph.addPuntosNH(this.userID, this.ph.puntosNH(this.userID) - premio.getCoste());
                                 updateWelcomeLabel();
-                            }else {
+                            } else {
                                 JOptionPane.showMessageDialog(this, "No tienes puntos suficientes");
                             }
-
                         } catch (Exception ex) {
                             throw new RuntimeException(ex);
                         }
                     } else if (respuesta == JOptionPane.NO_OPTION) {
                         JOptionPane.showMessageDialog(this, "Premio no recibido");
-                    }else{
+                    } else {
                         JOptionPane.showMessageDialog(this, "Saliendo");
                     }
                 });
@@ -294,6 +328,7 @@ import java.util.Properties;
             }
             JScrollPane scrollPane = new JScrollPane(panel);
             JOptionPane.showMessageDialog(null, scrollPane, "Selecciona un premio a canjear", JOptionPane.PLAIN_MESSAGE);
+
         }
 
         public static class DateLabelFormatter extends JFormattedTextField.AbstractFormatter {
@@ -321,4 +356,24 @@ import java.util.Properties;
             welcomeLabel.setText("Bienvenido al menú " + userName + "                         " +
                     "                  Puntos NH: " + puntos + "pts" + "   Saldo: " + saldo + "€");
         }
+        public ImageIcon scaleImage(ImageIcon icon, int w, int h)
+        {
+            int nw = icon.getIconWidth();
+            int nh = icon.getIconHeight();
+
+            if(icon.getIconWidth() > w)
+            {
+                nw = w;
+                nh = (nw * icon.getIconHeight()) / icon.getIconWidth();
+            }
+
+            if(nh > h)
+            {
+                nh = h;
+                nw = (icon.getIconWidth() * nh) / icon.getIconHeight();
+            }
+
+            return new ImageIcon(icon.getImage().getScaledInstance(nw, nh, Image.SCALE_DEFAULT));
+        }
+
     }
