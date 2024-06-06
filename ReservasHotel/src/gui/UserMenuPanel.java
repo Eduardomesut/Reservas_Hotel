@@ -12,6 +12,8 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -222,40 +224,42 @@ import java.util.Properties;
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             String checkIn = format.format(checkInDate);
             String checkOut = format.format(checkOutDate);
-            if (this.ph.habitacionOcupada(Integer.parseInt(id_habitacion), checkIn, checkOut)){
-                JOptionPane.showMessageDialog(this, "Lo sentimos, no hay habitación para estas fechas...");
-            }else {
-                precio = ph.getPrecioByHabyFecha(Integer.parseInt(id_habitacion), checkIn, checkOut);
-                JOptionPane pago = new JOptionPane();
-                int respuesta = pago.showConfirmDialog(this, "Precio: " + precio + " Euros", "Confirmación de reserva", JOptionPane.YES_NO_OPTION);
-                if (respuesta == JOptionPane.YES_OPTION) {
-                    try {
-                        if (ph.saldo(this.userID) - precio >= 0){
-                            Reserva newReservation = new Reserva(userID, Integer.parseInt(id_habitacion), checkIn, checkOut);
-                            ph.addReserva(newReservation);
-                            JOptionPane.showMessageDialog(this, "Reserva realizada con éxito!");
-                            ph.addPuntosNH(this.userID, (int)(ph.puntosNH(this.userID) + precio * 10));
-                            ph.addSaldo(this.userID, ph.saldo(this.userID) - precio);
-                            JOptionPane.showMessageDialog(this, "Enhorabuena como cliente te llevas " + ((int)precio * 10) + " puntos NH!");
-                            frame.dispose();
+            if (checkInDate.before(checkOutDate) && checkInDate.after(Date.from(Instant.now()))){
+                if (this.ph.habitacionOcupada(Integer.parseInt(id_habitacion), checkIn, checkOut)){
+                    JOptionPane.showMessageDialog(this, "Lo sentimos, no hay habitación para estas fechas...");
+                }else {
+                    precio = ph.getPrecioByHabyFecha(Integer.parseInt(id_habitacion), checkIn, checkOut);
+                    JOptionPane pago = new JOptionPane();
+                    int respuesta = pago.showConfirmDialog(this, "Precio: " + precio + " Euros", "Confirmación de reserva", JOptionPane.YES_NO_OPTION);
+                    if (respuesta == JOptionPane.YES_OPTION) {
+                        try {
+                            if (ph.saldo(this.userID) - precio >= 0){
+                                Reserva newReservation = new Reserva(userID, Integer.parseInt(id_habitacion), checkIn, checkOut);
+                                ph.addReserva(newReservation);
+                                JOptionPane.showMessageDialog(this, "Reserva realizada con éxito!");
+                                ph.addPuntosNH(this.userID, (int)(ph.puntosNH(this.userID) + precio * 10));
+                                ph.addSaldo(this.userID, ph.saldo(this.userID) - precio);
+                                JOptionPane.showMessageDialog(this, "Enhorabuena como cliente te llevas " + ((int)precio * 10) + " puntos NH!");
+                                frame.dispose();
 
-
-
-
-                            //Meter 10 puntos NH por cada euros gastado en la reserva
-                            updateWelcomeLabel();
-                        }else{
-                            JOptionPane.showMessageDialog(this, "Reserva cancelada, no dispone de saldo suficiente");
+                                //Meter 10 puntos NH por cada euros gastado en la reserva
+                                updateWelcomeLabel();
+                            }else{
+                                JOptionPane.showMessageDialog(this, "Reserva cancelada, no dispone de saldo suficiente");
+                            }
+                        } catch (Exception e) {
+                            JOptionPane.showMessageDialog(this, "Error al hacer la reserva: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                         }
-                    } catch (Exception e) {
-                        JOptionPane.showMessageDialog(this, "Error al hacer la reserva: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    } else if (respuesta == JOptionPane.NO_OPTION) {
+                        JOptionPane.showMessageDialog(this, "Reserva cancelada");
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Saliendo");
                     }
-                } else if (respuesta == JOptionPane.NO_OPTION) {
-                    JOptionPane.showMessageDialog(this, "Reserva cancelada");
-                } else {
-                    JOptionPane.showMessageDialog(this, "Saliendo");
                 }
+            }else{
+                JOptionPane.showMessageDialog(this, "Fechas introducidas incorrectas");
             }
+
         }
 
         private void showReservations() throws Exception {
