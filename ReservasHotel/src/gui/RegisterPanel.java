@@ -23,12 +23,13 @@ public class RegisterPanel extends JPanel {
         setLayout(new GridLayout(6, 2, 10, 10));
 
         // Nombre y apellidos
-        add(new JLabel("Nombre y Apellidos:"));
+        add(new JLabel("   Nombre y Apellidos:"));
         JTextField nameField = new JTextField();
+
         add(nameField);
 
         // Fecha de nacimiento con JDatePicker
-        add(new JLabel("Fecha de Nacimiento:"));
+        add(new JLabel("   Fecha de Nacimiento:"));
         UtilDateModel model = new UtilDateModel();
         Properties p = new Properties();
         p.put("text.today", "Today");
@@ -38,16 +39,19 @@ public class RegisterPanel extends JPanel {
         JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new UserMenuPanel.DateLabelFormatter());
         add(datePicker);
         //Contraseña
-        add(new JLabel("Introduce una contraseña: "));
+        add(new JLabel("   Introduce una contraseña: "));
         JPasswordField passwordField = new JPasswordField();
         add(passwordField);
         //Confirmar contraseña
-        add(new JLabel("Vuelve a introducir la contraseña: "));
+        add(new JLabel("   Vuelve a introducir la contraseña: "));
         JPasswordField passwordFieldConf = new JPasswordField();
         add(passwordFieldConf);
+        add(new JLabel("   Confirmo los terminos y condiciones"));
+        JCheckBox check = new JCheckBox();
+        add(check);
 
         // Botón de registro
-        JButton registerButton = new JButton("Registrarse");
+        JButton registerButton = new JButton("   Registrarse");
         registerButton.addActionListener(e -> {
             Date selectedDate = (Date) datePicker.getModel().getValue();
             // Formatear la fecha como se requiera, por ejemplo, a YYYY-MM-DD
@@ -57,7 +61,7 @@ public class RegisterPanel extends JPanel {
             String passwordString = new String(passwordArray);
             char[] passwordArrayConf = passwordFieldConf.getPassword();
             String passwordStringConf = new String(passwordArrayConf);
-            registerUser(nameField.getText(), dob,passwordString,passwordStringConf);
+            registerUser(nameField.getText(), dob,passwordString,passwordStringConf, check);
         });
         add(registerButton);
 
@@ -66,22 +70,27 @@ public class RegisterPanel extends JPanel {
         backButton.addActionListener(e -> frame.showCard("Main"));
         add(backButton);
     }
-    private void registerUser(String name, String dob, String textPass, String textPassConf) {
+    private void registerUser(String name, String dob, String textPass, String textPassConf, JCheckBox check) {
         try {
-            if (textPass.equals(textPassConf)){
-            clientes newClient = new clientes(name, dob);
-            ph.addCliente(newClient);
-            int userId = ph.darIDNHUsuario(name, dob);
-                if (userId != -1) {
-                    ph.addPassword(userId, textPass);
-                    JOptionPane.showMessageDialog(this, "Registrado con éxito. Su ID de usuario es: " + userId + ". Bienvenido " + name);
-                    frame.switchToUserMenu(userId);
-                 } else {
-                JOptionPane.showMessageDialog(this, "Error en la generación de su ID, vuelva a intentarlo");
+            if (check.isSelected()){
+                if (textPass.equals(textPassConf)){
+                    clientes newClient = new clientes(name, dob);
+                    ph.addCliente(newClient);
+                    int userId = ph.darIDNHUsuario(name, dob);
+                    if (userId != -1) {
+                        ph.addPassword(userId, textPass);
+                        JOptionPane.showMessageDialog(this, "Registrado con éxito. Su ID de usuario es: " + userId + ". Bienvenido " + name);
+                        frame.switchToUserMenu(userId);
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Error en la generación de su ID, vuelva a intentarlo");
+                    }
+                }else {
+                    JOptionPane.showMessageDialog(this, "La contraseña no coincide pruebe otra vez");
                 }
             }else {
-                JOptionPane.showMessageDialog(this, "La contraseña no coincide pruebe otra vez");
+                JOptionPane.showMessageDialog(this, "Tienes que aceptar los términos para continuar");
             }
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }

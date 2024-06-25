@@ -10,4 +10,5 @@ public interface hotelesDAO {
     public hoteles getHotelByReserva(int reserva_id) throws Exception;
     public int updateHotel(hoteles h, String nombre, String ubicacion) throws Exception;
     public String getNombreHotel(int habitacion_id)throws Exception;
+    public int registrarHotel (String nombre, String ubicacion) throws Exception;
 }

@@ -1,11 +1,6 @@
 package biz;
 
-import dao.implementations.ReservaDAOImpl;
-import dao.implementations.clientesDAOImpl;
-import dao.implementations.hotelesDAOImpl;
-import dao.implementations.habitacionesDAOImpl;
-import dao.implementations.preciosDAOImpl;
-import dao.implementations.passwordDAOImpl;
+import dao.implementations.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -17,32 +12,64 @@ public class ProgramaHotel {
 
     public int addReserva (Reserva h)throws  Exception {
         int r = 0;
-        try (ReservaDAOImpl re = new ReservaDAOImpl(); clientesDAOImpl cl = new clientesDAOImpl();){
-            re.addReserva(h.getCliente_id(), h.getHabitacion_id(),h.getFecha_ingreso(),h.getFecha_salida());
-            cl.updateCliente(h.getFecha_ingreso(),h.getFecha_salida(),re.getReservaId(h.getCliente_id(),h.getFecha_ingreso()));
+        try (ReservaDAOImpl re = new ReservaDAOImpl(); clientesDAOImpl cl = new clientesDAOImpl(); habitacionesDAOImpl ha = new habitacionesDAOImpl();){
+                re.addReserva(h.getCliente_id(), h.getHabitacion_id(),h.getFecha_ingreso(),h.getFecha_salida());
+                cl.updateCliente(h.getFecha_ingreso(),h.getFecha_salida(),re.getReservaId(h.getCliente_id(),h.getFecha_ingreso()));
+
         }catch (Exception e){
             throw e;
         }
         return r;
     }
+    public boolean habitacionOcupada (int hab_id, String fechaE, String fechaS) throws Exception{
+        try (habitacionesDAOImpl ha = new habitacionesDAOImpl();){
+            if (ha.habitacionOcupada(hab_id, fechaE, fechaS)){
+                return true;
+            }else {
+                return false;
+            }
+        }catch (Exception e){
+            throw e;
+        }
+    }
     public int addCliente (clientes h) throws Exception{
         int r = 0;
-        try (clientesDAOImpl c = new clientesDAOImpl();){
+        try (clientesDAOImpl c = new clientesDAOImpl(); datosUsuarioDAOImpl d = new datosUsuarioDAOImpl();){
             r = c.addCliente(h.getNombre(),h.getFechaNac());
+            d.insertDatos(c.getClienteId(h.getNombre(),h.getFechaNac()), 0,0);
         }catch (Exception e){
             throw e;
         }
         return r;
+    }
+    public int puntosNH (int id_cliente) throws Exception{
+        int puntos = 0;
+        try (datosUsuarioDAOImpl da = new datosUsuarioDAOImpl();){
+            puntos = da.getDatosUser(id_cliente).getPuntosNH();
+        }catch (Exception e){
+            throw  e;
+        }
+        return puntos;
+    }
+    public double saldo (int id_cliente) throws Exception{
+        double saldo = 0;
+        try (datosUsuarioDAOImpl da = new datosUsuarioDAOImpl();){
+            saldo = da.getDatosUser(id_cliente).getSaldo();
+
+        }catch (Exception e){
+            throw e;
+        }
+        return saldo;
     }
 
     //Usos de prueba
     //Inicio de sesión
 
     //Pruebas desechable para sacar los clientes
-    public ArrayList<clientes> getClientes(String nombre) throws Exception {
+    public ArrayList<clientes> getClientes(String nombre, String nacimiento) throws Exception {
         ArrayList<clientes> al = new ArrayList<>();
         try (clientesDAOImpl c = new clientesDAOImpl();){
-            al = c.getClientes(nombre);
+            al = c.getClientes(nombre, nacimiento);
         } catch (Exception e) {
             throw e;
         }
@@ -94,6 +121,17 @@ public class ProgramaHotel {
         }
 
         return nombre;
+    }
+    public void meterHabitacion (int hotel_id, String numero, String tipo, double precio_alto, double precio_medio, double precio_bajo) throws Exception{
+        int habitacion_id = 0;
+        int hotel;
+        try (habitacionesDAOImpl hab = new habitacionesDAOImpl(); preciosDAOImpl pre = new preciosDAOImpl();){
+            hotel = hab.addHabitacion(hotel_id, numero, tipo);
+            habitacion_id = hab.getIdHab(hotel_id, numero, tipo);
+            pre.addprecios(precio_alto, precio_medio, precio_bajo, habitacion_id);
+        }catch (Exception e){
+            throw e;
+        }
     }
     public Reserva reservaDeUsuario (int id_usuario)throws Exception{
         Reserva nueva = null;
@@ -191,5 +229,43 @@ public class ProgramaHotel {
             throw e;
         }
         return password;
+    }
+    public int registrarHotel (String nombre, String ubicacion) throws Exception{
+        int r = 0;
+        try (hotelesDAOImpl ho = new hotelesDAOImpl();){
+            ho.registrarHotel(nombre, ubicacion);
+        }catch (Exception e){
+            throw e;
+        }
+        return r;
+    }
+    public int addPuntosNH (int id_cliente, int puntos) throws Exception{
+        int r = 0;
+        try (datosUsuarioDAOImpl dat = new datosUsuarioDAOImpl();){
+            r = dat.updatePuntos(id_cliente, puntos);
+        }catch (Exception e){
+            throw e;
+        }
+        return r;
+    }
+    public int addSaldo (int id_cliente, double saldo) throws Exception{
+        int r = 0;
+        try (datosUsuarioDAOImpl dat = new datosUsuarioDAOImpl();){
+            r = dat.updateSaldo(id_cliente, saldo);
+        }catch (Exception e){
+            throw e;
+        }
+        return r;
+    }
+
+    public ArrayList<premios>listadoPremios() throws Exception{
+        ArrayList<premios>al = new ArrayList<>();
+        try (premiosDAOImpl prem = new premiosDAOImpl();){
+            al = prem.listaPremios();
+
+        }catch (Exception e){
+            throw e;
+        }
+        return al;
     }
 }

@@ -88,6 +88,71 @@ public class habitacionesDAOImpl implements habitacionesDAO, AutoCloseable{
     }
 
     @Override
+    public boolean habitacionOcupada(int idHab, String fechaE, String fechaS) throws Exception {
+        int reservada = 0;
+        ResultSet rs = null;
+        String sql = "SELECT COUNT(*) AS numero FROM reservas WHERE habitacion_id = ? AND (fecha_ingreso <= ? AND fecha_salida >= ?);";
+        try (PreparedStatement pst = con.prepareStatement(sql);){
+            pst.setInt(1,idHab);
+            pst.setString(2, fechaS);
+            pst.setString(3, fechaE);
+            rs = pst.executeQuery();
+            while (rs.next()){
+                reservada += rs.getInt("numero");
+            }
+        }catch (Exception e){
+            throw e;
+        }finally {
+            if (rs != null){
+                rs.close();
+            }
+        }
+        if (reservada > 0){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    @Override
+    public int addHabitacion(int hotel_id, String numero, String tipo) throws Exception {
+        int r = 0;
+        String sql = "INSERT INTO habitaciones (hotel_id, numero, tipo) VALUES (?, ?, ?);";
+        try (PreparedStatement pst = con.prepareStatement(sql);){
+            pst.setInt(1, hotel_id);
+            pst.setString(2,numero);
+            pst.setString(3,tipo);
+            r = pst.executeUpdate();
+        }catch (Exception e){
+            throw e;
+        }
+        return r;
+    }
+
+    @Override
+    public int getIdHab(int hotel_id, String numero, String tipo) throws Exception {
+        int id = 0;
+        ResultSet rs = null;
+        String sql = "SELECT habitacion_id FROM habitaciones WHERE hotel_id = ? AND numero = ? AND tipo = ?;";
+        try (PreparedStatement pst = con.prepareStatement(sql);){
+            pst.setInt(1,hotel_id);
+            pst.setString(2,numero);
+            pst.setString(3,tipo);
+            rs = pst.executeQuery();
+            while (rs.next()){
+                id = rs.getInt("habitacion_id");
+            }
+        }catch (Exception e){
+            throw  e;
+        }finally {
+            if (rs != null){
+                rs.close();
+            }
+        }
+        return id;
+    }
+
+    @Override
     public void close() throws Exception {
         con.close();
     }
